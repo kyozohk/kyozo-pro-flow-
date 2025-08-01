@@ -10,7 +10,7 @@ interface MarqueeProps {
   reverse?: boolean;
 }
 
-const Marquee: React.FC<MarqueeProps> = ({ children, duration = '40s', reverse = false }) => {
+export const Marquee: React.FC<MarqueeProps> = ({ children, duration = '40s', reverse = false }) => {
   const animationClass = reverse ? 'marquee-reverse' : 'marquee';
   const childrenArray = React.Children.toArray(children);
 

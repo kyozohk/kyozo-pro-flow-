@@ -8,7 +8,16 @@ const CheckIcon = () => (
   </svg>
 );
 
-const PlanCard = ({ title, subtitle, features, price, gradientClass, titleColor }) => (
+interface PlanCardProps {
+  title: string;
+  subtitle: string;
+  features: string[];
+  price: string;
+  gradientClass: string;
+  titleColor: string;
+}
+
+const PlanCard: React.FC<PlanCardProps> = ({ title, subtitle, features, price, gradientClass, titleColor }) => (
   <div className={`w-full lg:w-1/2 p-0.5 rounded-3xl bg-gradient-to-br ${gradientClass}`}>
     <div className="bg-[#1C1C1C] h-full rounded-[22px] p-8 flex flex-col">
       <h3 className={`text-4xl font-black ${titleColor}`}>{title}</h3>

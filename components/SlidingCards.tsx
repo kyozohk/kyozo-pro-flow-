@@ -7,7 +7,7 @@ interface SlidingCardsProps {
   children?: ReactNode;
 }
 
-const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
+export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   

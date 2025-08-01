@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import Marquee from './Marquee';
+import { Marquee } from './Marquee';
 import { bubbleRowColors } from '../lib/colors';
 
 const Bubble = ({ text, color }: { text: string; color: string }) => {
@@ -17,7 +17,7 @@ const Bubble = ({ text, color }: { text: string; color: string }) => {
 
   return (
     <div
-      className="rounded-full border-2 px-10 py-10 cursor-pointer inline-flex items-center justify-center"
+      className="rounded-full border-2 px-26 py-10 cursor-pointer inline-flex items-center justify-center"
       style={style}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
