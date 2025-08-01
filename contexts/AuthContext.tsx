@@ -8,6 +8,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithPhoneNumber,
   signInWithPopup,
+  signInWithCredential,
   GoogleAuthProvider,
   sendEmailVerification,
   updateProfile,
@@ -21,14 +22,16 @@ import { auth, db, storage } from '../lib/firebase';
 
 interface AuthContextType {
   currentUser: User | null;
+  user: User | null; // Alias for currentUser for easier access
   loading: boolean;
-  signUpWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string) => Promise<any>;
   signUpWithPhone: (phoneNumber: string) => Promise<any>;
   verifyPhoneCode: (verificationId: string, code: string) => Promise<any>;
-  signInWithEmail: (email: string, password: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<any>;
+  signInWithGoogle: () => Promise<any>;
   completeProfile: (firstName: string, lastName: string, avatarFile?: File) => Promise<void>;
   logout: () => Promise<void>;
+  signOut: () => Promise<void>; // Alias for logout for easier access
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -89,7 +92,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const verifyPhoneCode = async (verificationId: string, code: string) => {
     try {
       const credential = PhoneAuthProvider.credential(verificationId, code);
-      return await auth.signInWithCredential(credential);
+      return await signInWithCredential(auth, credential);
     } catch (error) {
       console.error("Error verifying phone code:", error);
       throw error;
@@ -179,6 +182,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const value = {
     currentUser,
+    user: currentUser, // Alias for currentUser
     loading,
     signUpWithEmail,
     signUpWithPhone,
@@ -186,7 +190,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     signInWithEmail,
     signInWithGoogle,
     completeProfile,
-    logout
+    logout,
+    signOut: logout // Alias for logout
   };
 
   return (

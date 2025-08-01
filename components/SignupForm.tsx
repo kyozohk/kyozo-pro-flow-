@@ -1,10 +1,15 @@
+"use client";
+
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import TabButton from './TabButton';
 import CustomInput from './CustomInput';
 import CustomCheckbox from './CustomCheckbox';
 import Dialog from './Dialog';
 import CustomButton from './CustomButton';
+import ErrorNotification from './ErrorNotification';
 import { AuthTab, FormMode } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 const SuccessView: React.FC<{ message: string }> = ({ message }) => (
     <div className="text-center space-y-4 py-8">
@@ -21,6 +26,8 @@ interface WaitlistFormProps {
 }
 
 const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
+  const router = useRouter();
+  const { signUpWithEmail, signInWithEmail, signInWithGoogle } = useAuth();
   const [authTab, setAuthTab] = useState<AuthTab>(AuthTab.Email);
   const [formMode, setFormMode] = useState<FormMode>(FormMode.SignUp);
   const [formData, setFormData] = useState({
@@ -33,7 +40,9 @@ const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
     whatsapp: true,
   });
   const [errors, setErrors] = useState<Partial<Record<keyof Omit<typeof formData, 'newsletter' | 'whatsapp'>, string>>>({});
+  const [authError, setAuthError] = useState<string>('');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -77,20 +86,73 @@ const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
     return newErrors;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
         setErrors(validationErrors);
         return;
     }
-    console.log("Waitlist Form Submitted:", formData);
-    setIsSuccess(true);
-    setTimeout(() => onSubmitted(), 3000);
+    
+    setIsLoading(true);
+    
+    try {
+      if (formMode === FormMode.SignUp && authTab === AuthTab.Email) {
+        await signUpWithEmail(formData.email, formData.password);
+        setIsSuccess(true);
+        setTimeout(() => router.push('/dashboard'), 2000);
+      } else if (formMode === FormMode.SignIn && authTab === AuthTab.Email) {
+        await signInWithEmail(formData.email, formData.password);
+        router.push('/dashboard');
+      } else if (formMode === FormMode.ForgotPassword) {
+        // Handle password reset
+        console.log("Password reset for:", authTab === AuthTab.Email ? formData.email : formData.phone);
+        setIsSuccess(true);
+        setTimeout(() => setFormMode(FormMode.SignIn), 2000);
+      }
+    } catch (error) {
+      console.error("Authentication error:", error);
+      if (error instanceof Error) {
+        setAuthError(`Authentication failed: ${error.message}`);
+      } else {
+        setAuthError('Authentication failed. Please check your credentials.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsLoading(true);
+      await signInWithGoogle();
+      router.push('/dashboard');
+    } catch (error: any) {
+      console.error("Google sign-in error:", error);
+      
+      // Provide specific error messages based on error code
+      let errorMessage = 'Google authentication failed. Please try again.';
+      
+      if (error?.code === 'auth/popup-blocked') {
+        errorMessage = 'Pop-up was blocked by your browser. Please allow pop-ups for this site and try again.';
+      } else if (error?.code === 'auth/popup-closed-by-user') {
+        errorMessage = 'Sign-in was cancelled. Please try again when ready.';
+      } else if (error?.code === 'auth/network-request-failed') {
+        errorMessage = 'Network error. Please check your internet connection and try again.';
+      } else if (error?.code === 'auth/user-disabled') {
+        errorMessage = 'This account has been disabled. Please contact support.';
+      } else if (error?.code === 'auth/account-exists-with-different-credential') {
+        errorMessage = 'An account already exists with the same email address but different sign-in credentials.';
+      }
+      
+      setAuthError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   if(isSuccess) {
-    return <SuccessView message="We'll notify you when we launch." />
+    return <SuccessView message={formMode === FormMode.ForgotPassword ? "Password reset instructions sent." : "Account created successfully!"} />;
   }
 
   const getDialogTitle = () => {
@@ -107,6 +169,7 @@ const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
         <TabButton label="Phone" isActive={authTab === AuthTab.Phone} onClick={() => setAuthTab(AuthTab.Phone)} />
       </div>
       <form onSubmit={handleSubmit} className="space-y-6">
+        {authError && <ErrorNotification message={authError} onClose={() => setAuthError('')} />}
         {formMode === FormMode.SignUp && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <CustomInput label="Firstname *" name="firstname" type="text" value={formData.firstname} onChange={handleInputChange} error={errors.firstname}/>
@@ -131,8 +194,8 @@ const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
           </div>
         )}
 
-        <CustomButton type="submit" variant="form">
-          {formMode === FormMode.SignUp ? 'Sign Up' : formMode === FormMode.SignIn ? 'Sign In' : 'Reset Password'}
+        <CustomButton type="submit" variant="form" disabled={isLoading}>
+          {isLoading ? 'Processing...' : formMode === FormMode.SignUp ? 'Sign Up' : formMode === FormMode.SignIn ? 'Sign In' : 'Reset Password'}
         </CustomButton>
         
         {authTab === AuthTab.Email && formMode !== FormMode.ForgotPassword && (
@@ -140,7 +203,8 @@ const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
             <button 
               type="button" 
               className="w-full py-3 px-4 flex items-center justify-center gap-2 bg-white text-gray-800 rounded-full hover:bg-gray-100 transition-colors"
-              onClick={() => console.log('Google sign-in')}
+              onClick={handleGoogleSignIn}
+              disabled={isLoading}
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
