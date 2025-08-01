@@ -4,3 +4,9 @@ export enum AuthTab {
   Email = 'Email',
   Phone = 'Phone'
 }
+
+export enum FormMode {
+  SignUp = 'SignUp',
+  SignIn = 'SignIn',
+  ForgotPassword = 'ForgotPassword'
+}

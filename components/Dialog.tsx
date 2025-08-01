@@ -49,10 +49,12 @@ const Dialog: React.FC<DialogProps> = ({ title, onClose, children }) => {
         onClick={(e) => e.stopPropagation()}
       >
         {/* The actual dialog content with border and background */}
-        <div className="relative rounded-3xl bg-gradient-to-br from-purple-600 via-pink-500 to-blue-500 p-0.5 shadow-2xl">
-            <div className="bg-[#1C1C1E] rounded-[23px] p-8 md:p-10">
-                <h2 id="dialog-title" className="text-4xl font-bold text-center mb-8">{title}</h2>
-                {children}
+        <div className="relative rounded-3xl bg-gradient-to-br from-purple-600 via-pink-500 to-blue-500 p-[1px] shadow-2xl">
+            <div className="bg-[#1C1C1E] rounded-[23px] p-8 md:p-12">
+                <h2 id="dialog-title" className="text-5xl md:text-6xl font-bold text-center mb-12">{title}</h2>
+                <div className="space-y-8">
+                    {children}
+                </div>
             </div>
         </div>
       </div>

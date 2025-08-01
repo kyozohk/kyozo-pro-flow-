@@ -2,7 +2,7 @@ import React from 'react';
 
 interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  variant?: 'primary' | 'outline' | 'form';
+  variant?: 'primary' | 'outline' | 'form' | 'text';
   size?: 'default' | 'small';
 }
 
@@ -18,6 +18,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     primary: 'bg-[#E0407B] text-white hover:bg-pink-600',
     outline: 'bg-transparent border-2 border-[#E0407B] text-[#E0407B] hover:bg-[#E0407B] hover:text-white',
     form: 'w-full bg-[#E0407B] text-white hover:bg-pink-600 rounded-xl text-lg py-4',
+    text: 'bg-transparent text-[#E0407B] hover:text-pink-600 p-0 font-normal text-left',
   };
 
   const sizeStyles = {
