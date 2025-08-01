@@ -2,7 +2,6 @@
 import React from 'react';
 import KyozoLogo from './ui/KyozoLogo';
 import KyozoIcon from './ui/KyozoIcon';
-import { CustomButton } from './index';
 
 
 const Footer: React.FC = () => {
@@ -12,9 +11,9 @@ const Footer: React.FC = () => {
         <div className="pl-4">
             <KyozoLogo/>
         </div>
-        <CustomButton variant="primary" size="default">
+        <button className="font-bold transition-all duration-300 ease-in-out bg-[#E0407B] text-white hover:bg-pink-600 py-3 px-8 rounded-full text-lg">
             Get Started
-        </CustomButton>
+        </button>
       </div>
     </footer>
   );
