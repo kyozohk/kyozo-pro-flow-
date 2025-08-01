@@ -18,7 +18,7 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { auth, db, storage } from '../lib/firebase';
+import { auth, db, storage, storageCustomMetadata } from '../lib/firebase';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -30,6 +30,8 @@ interface AuthContextType {
   signInWithEmail: (email: string, password: string) => Promise<any>;
   signInWithGoogle: () => Promise<any>;
   completeProfile: (firstName: string, lastName: string, avatarFile?: File) => Promise<void>;
+  checkEmailVerified: () => Promise<boolean>;
+  sendVerificationEmail: () => Promise<void>;
   logout: () => Promise<void>;
   signOut: () => Promise<void>; // Alias for logout for easier access
 }
@@ -69,6 +71,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
       return userCredential;
     } catch (error) {
       console.error("Error signing up with email:", error);
+      throw error;
+    }
+  };
+  
+  // Check if email is verified
+  const checkEmailVerified = async () => {
+    if (!currentUser) throw new Error("No authenticated user");
+    
+    // Reload user to get latest status
+    await currentUser.reload();
+    return currentUser.emailVerified;
+  };
+  
+  // Send verification email
+  const sendVerificationEmail = async () => {
+    if (!currentUser) throw new Error("No authenticated user");
+    
+    try {
+      await sendEmailVerification(currentUser);
+    } catch (error) {
+      console.error("Error sending verification email:", error);
       throw error;
     }
   };
@@ -146,18 +169,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       let photoURL = currentUser.photoURL;
       
-      // Upload avatar if provided
-      if (avatarFile) {
-        const storageRef = ref(storage, `avatars/${currentUser.uid}`);
-        await uploadBytes(storageRef, avatarFile);
-        photoURL = await getDownloadURL(storageRef);
-      }
-      
-      // Update Firebase Auth profile
+      // Update display name
       await updateProfile(currentUser, {
         displayName: `${firstName} ${lastName}`,
-        photoURL: photoURL
       });
+      
+      // Upload avatar if provided
+      if (avatarFile) {
+        const avatarRef = ref(storage, `avatars/${currentUser.uid}`);
+        
+        // Use custom metadata to handle CORS
+        await uploadBytes(avatarRef, avatarFile, { 
+          customMetadata: storageCustomMetadata 
+        });
+        
+        photoURL = await getDownloadURL(avatarRef);
+        
+        // Update profile with avatar URL
+        await updateProfile(currentUser, {
+          photoURL: photoURL,
+        });
+      }
       
       // Save to Firestore
       await setDoc(doc(db, 'users', currentUser.uid), {
@@ -190,6 +222,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     signInWithEmail,
     signInWithGoogle,
     completeProfile,
+    checkEmailVerified,
+    sendVerificationEmail,
     logout,
     signOut: logout // Alias for logout
   };

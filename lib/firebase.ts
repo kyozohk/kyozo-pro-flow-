@@ -2,7 +2,7 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
+import { getStorage, connectStorageEmulator } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -20,4 +20,17 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-export { app, auth, db, storage };
+// Set custom metadata for CORS
+const storageCustomMetadata = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type'
+};
+
+// For local development, you can use Firebase emulators
+// Uncomment this if you're using Firebase emulators
+// if (process.env.NODE_ENV === 'development') {
+//   connectStorageEmulator(storage, 'localhost', 9199);
+// }
+
+export { app, auth, db, storage, storageCustomMetadata };
