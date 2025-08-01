@@ -1,19 +1,7 @@
 
 import React from 'react';
-
-const KyozoLogo = () => (
-    <svg width="84" height="24" viewBox="0 0 84 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M11.363 23.5V0.5H19.793V5.08H14.123V9.91H19.313V14.49H14.123V18.92H19.793V23.5H11.363Z" fill="white"/>
-        <path d="M21.9387 23.5V0.5H24.6987V23.5H21.9387Z" fill="white"/>
-        <path d="M36.1018 0.5C33.0718 0.5 30.6318 2.3 30.6318 5.92C30.6318 9.54 33.0718 11.34 36.1018 11.34C39.1318 11.34 41.5718 9.54 41.5718 5.92C41.5718 2.3 39.1318 0.5 36.1018 0.5ZM33.3918 5.92C33.3918 3.84 34.5118 2.82 36.1018 2.82C37.6918 2.82 38.8118 3.84 38.8118 5.92C38.8118 8 37.6918 9.02 36.1018 9.02C34.5118 9.02 33.3918 8 33.3918 5.92Z" fill="white"/>
-        <path d="M36.1018 12.66C33.0718 12.66 30.6318 14.46 30.6318 18.08C30.6318 21.7 33.0718 23.5 36.1018 23.5C39.1318 23.5 41.5718 21.7 41.5718 18.08C41.5718 14.46 39.1318 12.66 36.1018 12.66ZM33.3918 18.08C33.3918 16 34.5118 14.98 36.1018 14.98C37.6918 14.98 38.8118 16 38.8118 18.08C38.8118 20.16 37.6918 21.18 36.1018 21.18C34.5118 20.16 33.3918 20.16 33.3918 18.08Z" fill="white"/>
-        <path d="M44.6288 23.5V0.5H53.0588V5.08H47.3888V9.91H52.5788V14.49H47.3888V18.92H53.0588V23.5H44.6288Z" fill="white"/>
-        <path d="M64.7118 0.5L58.2318 11.99L64.7118 23.5H61.5918L56.6118 14.1L51.6318 23.5H48.5118L55.0218 11.99L48.5118 0.5H51.6318L56.6118 9.89L61.5918 0.5H64.7118Z" fill="white"/>
-        <path d="M67.3392 23.5V0.5H70.0992V23.5H67.3392Z" fill="white"/>
-        <path d="M82.1643 0.5C79.1343 0.5 76.6943 2.3 76.6943 5.92C76.6943 9.54 79.1343 11.34 82.1643 11.34C85.1943 11.34 87.6343 9.54 87.6343 5.92C87.6343 2.3 85.1943 0.5 82.1643 0.5ZM79.4543 5.92C79.4543 3.84 80.5743 2.82 82.1643 2.82C83.7543 2.82 84.8743 3.84 84.8743 5.92C84.8743 8 83.7543 9.02 82.1643 9.02C80.5743 9.02 79.4543 8 79.4543 5.92Z" fill="white"/>
-        <path d="M72.2882 23.5V12.66H75.0482V23.5H72.2882Z" fill="white"/>
-    </svg>
-);
+import KyozoLogo from './ui/KyozoLogo';
+import KyozoIcon from './ui/KyozoIcon';
 
 
 const Footer: React.FC = () => {
@@ -21,7 +9,7 @@ const Footer: React.FC = () => {
     <footer className="fixed bottom-0 left-0 w-full p-4 md:p-6 flex justify-center items-center z-40">
       <div className="bg-[#1C1C1C] rounded-full p-1 flex items-center space-x-4">
         <div className="pl-4">
-            <KyozoLogo />
+            <KyozoLogo className="h-6" />
         </div>
         <button className="bg-gradient-to-r from-[#D646FF] to-[#46A3FF] text-white font-bold py-3 px-6 rounded-full hover:opacity-90 transition-opacity">
             Join

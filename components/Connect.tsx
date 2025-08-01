@@ -1,6 +1,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { Heading2, Paragraph, Button } from './ui/Typography';
 
 const Connect: React.FC = () => {
   return (
@@ -12,20 +13,22 @@ const Connect: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-24 sm:py-32 lg:py-40">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="text-center lg:text-left">
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-none">
+            <Heading2>
               Connect.
               <br />
               Explore.
               <br />
               Engage.
-            </h1>
-            <p className="mt-6 text-lg text-gray-300 max-w-lg mx-auto lg:mx-0">
-              Connect with visionary creators and forward-thinking communities.
-            </p>
+            </Heading2>
+            <div className="mt-6 max-w-lg mx-auto lg:mx-0">
+              <Paragraph>
+                Connect with visionary creators and forward-thinking communities.
+              </Paragraph>
+            </div>
             <div className="mt-10">
-              <button className="border border-gray-500 rounded-full px-8 py-3 text-white font-bold hover:bg-white hover:text-black transition-colors">
+              <Button>
                 Join the waitlist
-              </button>
+              </Button>
             </div>
           </div>
           <div className="flex justify-center lg:justify-end -mr-8 lg:-mr-24">

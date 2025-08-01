@@ -1,5 +1,8 @@
 
+"use client";
+
 import React, { ReactNode } from 'react';
+import './marquee.css';
 
 interface MarqueeProps {
   children: ReactNode;
@@ -8,23 +11,23 @@ interface MarqueeProps {
 }
 
 const Marquee: React.FC<MarqueeProps> = ({ children, duration = '40s', reverse = false }) => {
-  const animationClass = reverse ? 'animate-marquee-reverse' : 'animate-marquee';
+  const animationClass = reverse ? 'marquee-reverse' : 'marquee';
   const childrenArray = React.Children.toArray(children);
 
   return (
-    <div className="w-full overflow-x-hidden">
+    <div className="marquee-container">
       <div
-        className={`flex w-max items-center ${animationClass}`}
+        className={`marquee-content ${animationClass}`}
         style={{ animationDuration: duration }}
       >
         {/* Render children twice for a seamless loop */}
         {childrenArray.map((child, index) => (
-          <div key={index} className="px-3">
+          <div key={index} className="marquee-item">
             {child}
           </div>
         ))}
         {childrenArray.map((child, index) => (
-          <div key={`clone-${index}`} className="px-3" aria-hidden="true">
+          <div key={`clone-${index}`} className="marquee-item" aria-hidden="true">
             {child}
           </div>
         ))}

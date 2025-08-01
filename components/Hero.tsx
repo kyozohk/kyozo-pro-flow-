@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { Heading1 } from "./ui/Typography";
 
 const Hero = () => {
   return (
@@ -126,14 +127,14 @@ const Hero = () => {
 
       {/* Main Heading */}
       <div className="z-10 flex flex-col items-center max-w-6xl mx-auto">
-        <motion.h1
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-          className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-none z-10 text-white mb-8"
+          className="z-10 mb-8"
         >
-          Discover your creative universe
-        </motion.h1>
+          <Heading1>Discover your creative universe</Heading1>
+        </motion.div>
       </div>
     </section>
   );
