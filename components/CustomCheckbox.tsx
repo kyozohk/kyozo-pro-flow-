@@ -27,7 +27,7 @@ const CustomCheckbox: React.FC<CustomCheckboxProps> = ({ id, name, label, checke
           onChange={onChange}
           className="peer absolute opacity-0 w-6 h-6"
         />
-        <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-200 ease-in-out ${checked ? 'bg-[#E0407B] border-[#E0407B]' : 'bg-transparent border-2 border-gray-500 group-hover:border-gray-400'}`}>
+        <div className={`w-6 h-6 rounded flex items-center justify-center transition-all duration-200 ease-in-out ${checked ? 'bg-[#E0407B] border-[#E0407B]' : 'bg-transparent border-2 border-gray-500 group-hover:border-gray-400'}`}>
           <CheckIcon className={`w-4 h-4 text-white transition-opacity duration-200 ${checked ? 'opacity-100' : 'opacity-0'}`} />
         </div>
       </div>

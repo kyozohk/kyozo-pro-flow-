@@ -1,5 +1,11 @@
 // Export all components from the components directory
 
+// Auth components
+export { default as AuthDialog } from './auth/AuthDialog';
+export { default as SignIn } from './auth/SignIn';
+export { default as SignUp } from './auth/SignUp';
+export { default as ProfileCompletion } from './auth/ProfileCompletion';
+
 // Main components
 export { default as Bottom } from '@/components/Bottom'
 export { default as BubbleMarquee } from './BubbleMarquee';
@@ -21,8 +27,11 @@ export { Card3 } from './cards/Card3';
 
 // Custom components
 export { default as CustomButton } from './CustomButton';
-export { CustomTextarea } from './CustomTextarea';
-export { CustomToggleSwitch } from './CustomToggleSwitch';
-export { Dialog } from './Dialog';
-export { OtpInput } from './OtpInput';
-export { TabButton } from './TabButton';
+export { default as CustomTextarea } from './CustomTextarea';
+export { default as CustomToggleSwitch } from './CustomToggleSwitch';
+export { default as Dialog } from './Dialog';
+export { default as OtpInput } from './OtpInput';
+export { default as TabButton } from './TabButton';
+
+export { default as SignUpForm } from './SignupForm';
+

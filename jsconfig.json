@@ -1,7 +1,18 @@
 {
   "compilerOptions": {
+    "jsx": "react",
+    "jsxFactory": "React.createElement",
+    "jsxFragmentFactory": "React.Fragment",
     "paths": {
       "@/*": ["./*"]
-    }
-  }
+    },
+    "baseUrl": ".",
+    "target": "es6",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", ".next"]
 }
