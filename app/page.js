@@ -1,19 +1,20 @@
 'use client'
-import Image from "next/image";
-import {Hero, SlidingCards, Footer, Toolkit, Bottom, CoCircles, Marquee, BubbleMarquee, Header, HomePage, Plans, ConnectExplore, MiddleText} from "../components";
+import {ConnectExplore, Hero, SlidingCards, Footer, Toolkit, Bottom, Marquee, BubbleMarquee, Plans, MiddleText} from "../components";
+
 export default function Home() {
   return (
-    <div className="">
+    <div className="relative overflow-x-hidden">
       <Hero />
-      <ConnectExplore />
-      <MiddleText />
-      <SlidingCards />
-      <Toolkit />      
-      <Marquee />
-      <Plans />
-      <BubbleMarquee />
-      <Bottom />
-      <Footer />
+      <div className="relative z-10">
+        <ConnectExplore />
+        <Toolkit />      
+        <Marquee />
+        <Plans />
+        <BubbleMarquee />
+        <Bottom />
+        <SlidingCards />
+        <Footer />
+      </div>
     </div>
   );
 }
