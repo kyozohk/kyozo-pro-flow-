@@ -29,3 +29,4 @@ export { default as TabButton } from './TabButton';
 
 export { default as SignUpForm } from './SignupForm';
 
+export { default as MiddleText } from './MiddleText';
