@@ -11,6 +11,8 @@ interface BaseCardProps {
   bgColor?: string;
   borderColor?: string;
   className?: string;
+  leftColSpan?: number;
+  rightColSpan?: number;
 }
 
 const BaseCard: React.FC<BaseCardProps> = ({
@@ -23,6 +25,8 @@ const BaseCard: React.FC<BaseCardProps> = ({
   bgColor = colors.bgExclusive, // Using our theme color
   borderColor = colors.borderMedium, // Using our theme color
   className = '',
+  leftColSpan = 6,
+  rightColSpan = 6,
 }) => {
   return (
     <div 
@@ -31,7 +35,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 h-full">
         {/* Left Column: Content */}
-        <div className="flex flex-col pt-16 lg:pt-20 lg:col-span-6 z-10 px-8 md:px-12 lg:px-12">
+        <div className={`flex flex-col pt-16 lg:pt-20 lg:col-span-${leftColSpan} z-10 px-8 md:px-12 lg:px-12`}>
           {subtitle && (
             <p className="text-sm font-medium tracking-[0.2em] text-gray-400 mb-4">
               {subtitle.toUpperCase()}
@@ -56,7 +60,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
         </div>
 
         {/* Right Column: Content */}
-        <div className="z-10 h-full overflow-hidden lg:col-span-6">
+        <div className={`z-10 h-full overflow-hidden lg:col-span-${rightColSpan}`}>
           {rightContent}
         </div>
       </div>

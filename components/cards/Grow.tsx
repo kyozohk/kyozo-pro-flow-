@@ -24,6 +24,8 @@ const Grow: React.FC = () => {
       }
       bgColor={colors.bgExclusive}
       className="grow-card"
+      leftColSpan={6}
+      rightColSpan={6}
     />
   );
 };

@@ -6,14 +6,16 @@ import { colors } from '../../styles/theme';
 const Engage: React.FC = () => {
   return (
     <BaseCard
-      title="Engage with visionary communities"
-      subtitle="COMMUNITY CONNECTIONS"
-      description="Join and interact with diverse communities, from niche artistic circles to industry-leading collectives. Engage with passionate individuals who share your creative interests."
-      buttonText="Join the waitlist"
-      buttonAction={() => console.log('Join waitlist clicked')}
+      title="Engage with your audience"
+      subtitle="CONNECT"
+      description="Build meaningful connections with your audience through our suite of engagement tools. From personalized messaging to interactive content, we provide everything you need to create a vibrant community around your creative work."
+      buttonText="Learn more"
+      buttonAction={() => console.log('Learn more clicked')}
       rightContent={<ParallaxGallery />}
       bgColor={colors.bgExclusive}
       className="engage-card"
+      leftColSpan={6}
+      rightColSpan={6}
     />
   );
 };

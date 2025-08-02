@@ -14,6 +14,8 @@ const Exclusive: React.FC = () => {
       rightContent={<RollingWall />}
       bgColor={colors.bgExclusive}
       className="exclusive-card"
+      leftColSpan={5}
+      rightColSpan={7}
     />
   );
 };
