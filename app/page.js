@@ -1,9 +1,11 @@
 'use client'
-import Image from "next/image";
-import {Connect, Hero, SlidingCards, Footer, Toolkit, Bottom, CoCircles, Marquee, BubbleMarquee, Header, HomePage, Plans} from "../components";
+import {Connect, Hero, SlidingCards, Footer, Toolkit, Bottom, Marquee, BubbleMarquee, Plans} from "../components";
+import { CardExamples } from "../components/cards/CardExample";
 export default function Home() {
   return (
     <div className="">
+      <CardExamples />
+      <SlidingCards />
       <Hero />
       <Connect />
       <Toolkit />      
@@ -11,8 +13,6 @@ export default function Home() {
       <Plans />
       <BubbleMarquee />
       <Bottom />
-      {/* <CoCircles /> */}
-      <SlidingCards />
       <Footer />
     </div>
   );

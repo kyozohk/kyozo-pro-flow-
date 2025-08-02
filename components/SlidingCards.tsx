@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, ReactNode } from 'react';
 import { Card1 } from './cards/Card1';
 import { Card2 } from './cards/Card2';
 import { Card3 } from './cards/Card3';
+import { Exclusive } from './cards/Exclusive';
 
 interface SlidingCardsProps {
   children?: ReactNode;
@@ -12,7 +13,8 @@ export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
   const [scrollProgress, setScrollProgress] = useState(0);
   
   // Use provided children or default to the card components
-  const cardComponents = [<Card1 key="card1" />, <Card2 key="card2" />, <Card3 key="card3" />];
+  // const cardComponents = [<Card1 key="card1" />, <Card2 key="card2" />, <Card3 key="card3" />, <Exclusive key="exclusive" />];
+ const cardComponents = [<Exclusive key="exclusive" />];
   const childrenArray = children ? React.Children.toArray(children) : cardComponents;
   const numCards = childrenArray.length;
 
