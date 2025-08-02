@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, ReactNode } from 'react';
-import { Card1 } from './cards/Card1';
-import { Card2 } from './cards/Card2';
-import { Card3 } from './cards/Card3';
+import Exclusive from './cards/Exclusive';
+import Engage from './cards/Engage';
+import Grow from './cards/Grow';
 
 interface SlidingCardsProps {
   children?: ReactNode;
@@ -12,7 +12,11 @@ export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
   const [scrollProgress, setScrollProgress] = useState(0);
   
   // Use provided children or default to the card components
-  const cardComponents = [<Card1 key="card1" />, <Card2 key="card2" />, <Card3 key="card3" />];
+  const cardComponents = [
+    <Exclusive key="exclusive" />,
+    <Engage key="engage" />,
+    <Grow key="grow" />
+  ];
   const childrenArray = children ? React.Children.toArray(children) : cardComponents;
   const numCards = childrenArray.length;
 
@@ -23,12 +27,18 @@ export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
     const handleScroll = () => {
       const { top, height } = container.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      const scrollableDistance = height - viewportHeight;
-      const scrolled = -top;
+      // Add a threshold to delay the effect until the component is more in view
+      const threshold = viewportHeight * 0.2;
       
-      if (scrollableDistance > 0) {
-        const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
-        setScrollProgress(progress);
+      // Only start the effect when the container is at least partially in view
+      if (top < viewportHeight && top > -height + threshold) {
+        const scrollableDistance = height - viewportHeight + threshold;
+        const scrolled = Math.max(0, -top + threshold);
+        
+        if (scrollableDistance > 0) {
+          const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
+          setScrollProgress(progress);
+        }
       }
     };
 
@@ -44,8 +54,8 @@ export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
   const progressInSegment = cardProgress - activeCardIndex;
 
   return (
-    <div ref={containerRef} style={{ height: `${100 + 80 * cardsToScrollPast}vh` }} className="relative max-w-7xl mx-auto">
-      <div className="sticky top-[10vh] h-[80vh] w-full">
+    <div ref={containerRef} style={{ height: `${60 + 60 * cardsToScrollPast}vh` }} className="relative mx-12 pb-12">
+      <div className="sticky top-[20vh] h-[60vh] w-full">
         {childrenArray.map((child, i) => {
           let transform = 'translateY(100%) scale(1)';
           const zIndex = i;

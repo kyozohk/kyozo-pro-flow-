@@ -1,18 +1,18 @@
 'use client'
 import Image from "next/image";
-import {Connect, Hero, SlidingCards, Footer, Toolkit, Bottom, CoCircles, Marquee, BubbleMarquee, Header, HomePage, Plans} from "../components";
+import {Hero, SlidingCards, Footer, Toolkit, Bottom, CoCircles, Marquee, BubbleMarquee, Header, HomePage, Plans, ConnectExplore, MiddleText} from "../components";
 export default function Home() {
   return (
     <div className="">
       <Hero />
-      <Connect />
+      <ConnectExplore />
+      <MiddleText />
+      <SlidingCards />
       <Toolkit />      
       <Marquee />
       <Plans />
-      <BubbleMarquee />
       <Bottom />
-      {/* <CoCircles /> */}
-      <SlidingCards />
+      <BubbleMarquee />
       <Footer />
     </div>
   );

@@ -11,6 +11,8 @@ export { default as Bottom } from '@/components/Bottom'
 export { default as BubbleMarquee } from './BubbleMarquee';
 export { default as CoCircles } from './CoCircles';
 export { default as Connect } from './Connect';
+export { default as ConnectExplore } from './ConnectExplore';
+export { default as MiddleText } from './MiddleText';
 export { default as Footer } from './Footer';
 export { default as Header } from './Header';
 export { Marquee } from './Marquee';
