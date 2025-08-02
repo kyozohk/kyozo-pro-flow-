@@ -13,6 +13,7 @@ const ExpandingCircles: React.FC = () => {
   const MAX_DIAMETER_PX = 1200; // Larger maximum diameter
   const CIRCLE_GAP_PX = 600; // Much larger gap between circles
   const STATE_UPDATE_INTERVAL_MS = 50;
+  const BORDER_WIDTH = 35; // Much thicker border for the circles
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -62,18 +63,25 @@ const ExpandingCircles: React.FC = () => {
         if (diameter <= 0) return null;
 
         const normalizedDiameter = Math.min(diameter, MAX_DIAMETER_PX);
-        // Increased thickness and opacity
-        const opacity = 0.8 - 0.6 * (normalizedDiameter / MAX_DIAMETER_PX);
+        // Transparency gradient from 50% to 80%
+        const opacity = 0.8 - 0.3 * (normalizedDiameter / MAX_DIAMETER_PX);
 
         return (
           <div
             key={circle.id}
-            className="absolute rounded-full bg-gradient-to-tr from-fuchsia-500 via-purple-600 to-cyan-500"
+            className="absolute rounded-full"
             style={{
               width: `${diameter}px`,
               height: `${diameter}px`,
               opacity: opacity,
-              filter: 'blur(30px)',
+              border: `${BORDER_WIDTH}px solid transparent`,
+              backgroundImage: 'linear-gradient(to right top, #8B5CF6, #D946EF, #06B6D4)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'border-box',
+              boxShadow: '0 0 30px rgba(139, 92, 246, 0.5)',
+              WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+              WebkitMaskComposite: 'xor',
+              maskComposite: 'exclude',
             }}
           />
         );
@@ -85,7 +93,7 @@ const ExpandingCircles: React.FC = () => {
 const ConnectExplore: React.FC = () => {
   return (
     <div 
-      className="rounded-[40px] m-8 mb-50 mt-20 relative w-full mx-auto overflow-hidden h-[calc(100vh-10rem)]"
+      className="rounded-[40px] mx-12 relative w-full overflow-hidden h-screen"
       style={{ 
         backgroundColor: colors.bgExclusive, 
         border: `2px solid ${colors.borderMedium}`,
@@ -94,8 +102,8 @@ const ConnectExplore: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 h-full">
         {/* Left Column: Content */}
         <div 
-          className="flex flex-col justify-start pt-16 lg:pt-20 z-10 px-8 md:px-12 lg:px-12"
-          style={{ gridColumn: 'span 6 / span 6' }}
+          className="flex flex-col justify-end pb-16 lg:pb-20 z-10 px-8 md:px-12 lg:px-12"
+          style={{ gridColumn: 'span 5 / span 5' }}
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
             Connect.
@@ -119,21 +127,24 @@ const ConnectExplore: React.FC = () => {
 
         {/* Right Column: Phone with animated circle */}
         <div 
-          className="relative z-10 h-full overflow-hidden flex items-center justify-center"
-          style={{ gridColumn: 'span 6 / span 6' }}
+          className="relative z-10 h-full overflow-hidden flex items-end justify-center"
+          style={{ gridColumn: 'span 7 / span 7' }}
         >
           {/* Animated expanding circles */}
           <ExpandingCircles />
           
           {/* Phone image */}
-          <div className="relative z-20">
-            <Image 
-              src="/iphone.png" 
-              alt="iPhone" 
-              width={270} 
-              height={585} 
-              className="object-contain"
-            />
+          <div className="relative z-20 flex items-end justify-center pb-0">
+            <div className="overflow-hidden" style={{ height: '75vh' }}>
+              <Image 
+                src="/iphone.png" 
+                alt="iPhone" 
+                width={450} 
+                height={900} 
+                className="object-contain translate-y-1/4"
+                style={{ marginBottom: '-10%' }}
+              />
+            </div>
           </div>
         </div>
       </div>
