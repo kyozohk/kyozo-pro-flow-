@@ -20,18 +20,18 @@ const BaseCard: React.FC<BaseCardProps> = ({
   buttonText = 'Learn More',
   buttonAction = () => {},
   rightContent,
-  bgColor = '#2A2A2B', // Default dark background color from the image
-  borderColor = 'white/10', // Default border color with opacity
+  bgColor = colors.bgCardAlt, // Using our theme color
+  borderColor = colors.borderMedium, // Using our theme color
   className = '',
 }) => {
   return (
     <div 
-      className={`border border-${borderColor} rounded-[40px] p-8 md:p-12 lg:p-16 my-12 relative w-full mx-auto overflow-hidden min-h-[calc(100vh-96px)] flex items-center ${className}`}
+      className={`border border-${borderColor} rounded-[40px] my-12 relative w-full mx-auto overflow-hidden min-h-[calc(100vh-96px)] ${className}`}
       style={{ backgroundColor: bgColor }}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
         {/* Left Column: Content */}
-        <div className="flex flex-col justify-center z-10">
+        <div className="flex flex-col pt-16 lg:pt-24 z-10 px-8 md:px-12 lg:px-16">
           {subtitle && (
             <p className="text-sm font-medium tracking-[0.2em] text-gray-400 mb-4">
               {subtitle.toUpperCase()}
@@ -47,7 +47,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
             <div className="flex">
               <button 
                 onClick={buttonAction}
-                className="text-lg font-semibold text-white px-8 py-4 border-2 border-[#D45E9B] rounded-full hover:bg-[#D45E9B]/20 transition-all duration-300"
+                className="text-lg font-semibold text-white px-8 py-4 border-1 border-[#D45E9B] rounded-full hover:bg-[#D45E9B]/20 transition-all duration-300"
               >
                 {buttonText}
               </button>
@@ -55,13 +55,8 @@ const BaseCard: React.FC<BaseCardProps> = ({
           )}
         </div>
 
-        {/* Right Column: Media */}
-        <div className="hidden lg:block relative">
-          {rightContent}
-        </div>
-
-        {/* Mobile view for right content */}
-        <div className="lg:hidden">
+        {/* Right Column: Content */}
+        <div className="z-10 h-full overflow-hidden">
           {rightContent}
         </div>
       </div>

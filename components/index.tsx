@@ -14,9 +14,10 @@ export { default as Footer } from './Footer';
 export { default as Header } from './Header';
 export { Marquee } from './Marquee';
 export { default as Plans } from './Plans';
-export { SlidingCards } from './SlidingCards';
+export { default as SlidingCards } from './SlidingCards';
 export { default as Toolkit } from './Toolkit';
 export { default as Hero } from './Hero';
+export { default as VideoWall } from './VideoWall';
 
 
 // Card components
