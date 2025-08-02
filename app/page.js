@@ -1,10 +1,10 @@
 'use client'
-import {Connect, Hero, SlidingCards, Footer, Toolkit, Bottom, Marquee, BubbleMarquee, Plans} from "../components";
+import {ConnectExplore, Hero, SlidingCards, Footer, Toolkit, Bottom, Marquee, BubbleMarquee, Plans} from "../components";
 export default function Home() {
   return (
     <div className="">
       <Hero />
-      <Connect />
+      <ConnectExplore />
       <SlidingCards />
       <Toolkit />      
       <Marquee />

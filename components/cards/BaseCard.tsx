@@ -30,12 +30,15 @@ const BaseCard: React.FC<BaseCardProps> = ({
 }) => {
   return (
     <div 
-      className={`border-[0.5px] border-${borderColor} rounded-[40px] m-8 mb-50 mt-20 relative w-full mx-auto overflow-hidden h-[calc(100vh-10rem)] ${className}`}
-      style={{ backgroundColor: bgColor }}
+      className={`border-[0.5px] rounded-[40px] m-8 mb-50 mt-20 relative w-full mx-auto overflow-hidden h-[calc(100vh-10rem)] ${className}`}
+      style={{ backgroundColor: bgColor, borderColor: borderColor }}
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 h-full">
         {/* Left Column: Content */}
-        <div className={`flex flex-col pt-16 lg:pt-20 lg:col-span-${leftColSpan} z-10 px-8 md:px-12 lg:px-12`}>
+        <div 
+          className={`flex flex-col pt-16 lg:pt-20 z-10 px-8 md:px-12 lg:px-12`}
+          style={{ gridColumn: `span ${leftColSpan} / span ${leftColSpan}` }}
+        >
           {subtitle && (
             <p className="text-sm font-medium tracking-[0.2em] text-gray-400 mb-4">
               {subtitle.toUpperCase()}
@@ -60,7 +63,10 @@ const BaseCard: React.FC<BaseCardProps> = ({
         </div>
 
         {/* Right Column: Content */}
-        <div className={`z-10 h-full overflow-hidden lg:col-span-${rightColSpan}`}>
+        <div 
+          className={`z-10 h-full overflow-hidden`}
+          style={{ gridColumn: `span ${rightColSpan} / span ${rightColSpan}` }}
+        >
           {rightContent}
         </div>
       </div>
