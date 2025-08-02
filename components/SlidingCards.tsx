@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, ReactNode } from 'react';
-import { Card1 } from './cards/Card1';
-import { Card2 } from './cards/Card2';
-import { Card3 } from './cards/Card3';
+import CreativeCard from './cards/CreativeCard';
+import LearnCard from './cards/LearnCard';
+import InsightCard from './cards/InsightCard';
 import { Exclusive } from './cards/Exclusive';
 
 interface SlidingCardsProps {
@@ -13,8 +13,12 @@ export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
   const [scrollProgress, setScrollProgress] = useState(0);
   
   // Use provided children or default to the card components
-  // const cardComponents = [<Card1 key="card1" />, <Card2 key="card2" />, <Card3 key="card3" />, <Exclusive key="exclusive" />];
- const cardComponents = [<Exclusive key="exclusive" />];
+  const cardComponents = [
+    <CreativeCard key="creative" />,
+    <LearnCard key="learn" />,
+    <InsightCard key="insight" />,
+    <Exclusive key="exclusive" />
+  ];
   const childrenArray = children ? React.Children.toArray(children) : cardComponents;
   const numCards = childrenArray.length;
 
@@ -46,8 +50,8 @@ export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
   const progressInSegment = cardProgress - activeCardIndex;
 
   return (
-    <div ref={containerRef} style={{ height: `${100 + 80 * cardsToScrollPast}vh` }} className="relative max-w-7xl mx-auto">
-      <div className="sticky top-[10vh] h-[80vh] w-full">
+    <div ref={containerRef} style={{ height: `${100 + 100 * cardsToScrollPast}vh` }} className="relative mx-12 pb-12">
+      <div className="sticky top-0 h-screen w-full">
         {childrenArray.map((child, i) => {
           let transform = 'translateY(100%) scale(1)';
           const zIndex = i;

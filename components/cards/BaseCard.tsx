@@ -26,7 +26,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
 }) => {
   return (
     <div 
-      className={`border border-${borderColor} rounded-[40px] p-8 md:p-12 lg:p-16 relative w-full mx-auto my-8 overflow-hidden ${className}`}
+      className={`border border-${borderColor} rounded-[40px] p-8 md:p-12 lg:p-16 my-12 relative w-full mx-auto overflow-hidden min-h-[calc(100vh-96px)] flex items-center ${className}`}
       style={{ backgroundColor: bgColor }}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
