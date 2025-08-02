@@ -20,18 +20,18 @@ const BaseCard: React.FC<BaseCardProps> = ({
   buttonText = 'Learn More',
   buttonAction = () => {},
   rightContent,
-  bgColor = colors.bgCardAlt, // Using our theme color
+  bgColor = colors.bgExclusive, // Using our theme color
   borderColor = colors.borderMedium, // Using our theme color
   className = '',
 }) => {
   return (
     <div 
-      className={`border border-${borderColor} rounded-[40px] my-12 relative w-full mx-auto overflow-hidden min-h-[calc(100vh-96px)] ${className}`}
+      className={`border-[0.5px] border-${borderColor} rounded-[40px] m-8 mb-50 mt-20 relative w-full mx-auto overflow-hidden h-[calc(100vh-10rem)] ${className}`}
       style={{ backgroundColor: bgColor }}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
+      <div className="grid grid-cols-1 lg:grid-cols-12 h-full">
         {/* Left Column: Content */}
-        <div className="flex flex-col pt-16 lg:pt-24 z-10 px-8 md:px-12 lg:px-16">
+        <div className="flex flex-col pt-16 lg:pt-20 lg:col-span-6 z-10 px-8 md:px-12 lg:px-12">
           {subtitle && (
             <p className="text-sm font-medium tracking-[0.2em] text-gray-400 mb-4">
               {subtitle.toUpperCase()}
@@ -56,7 +56,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
         </div>
 
         {/* Right Column: Content */}
-        <div className="z-10 h-full overflow-hidden">
+        <div className="z-10 h-full overflow-hidden lg:col-span-6">
           {rightContent}
         </div>
       </div>

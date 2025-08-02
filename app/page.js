@@ -3,9 +3,9 @@ import {Connect, Hero, SlidingCards, Footer, Toolkit, Bottom, Marquee, BubbleMar
 export default function Home() {
   return (
     <div className="">
-      <SlidingCards />
       <Hero />
       <Connect />
+      <SlidingCards />
       <Toolkit />      
       <Marquee />
       <Plans />

@@ -2,6 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Heading2, Paragraph, Button } from './ui/Typography';
+import CirclePhone from './CirclePhone';
 
 const Connect: React.FC = () => {
   return (
@@ -33,13 +34,7 @@ const Connect: React.FC = () => {
           </div>
           <div className="flex justify-center lg:justify-end -mr-8 lg:-mr-24">
             <div className="relative w-[300px] h-[600px] transform rotate-12">
-               <Image 
-                  src="/iphone.png" 
-                  alt="Kyozo app on smartphone"
-                  width={300}
-                  height={600}
-                  className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
-               />
+               <CirclePhone />  
             </div>
           </div>
         </div>

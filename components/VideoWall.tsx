@@ -1,9 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 
 const ROW_COUNT = 12;
-const ANIMATION_DURATION_S = ROW_COUNT * 3.5; // Adjust speed by changing the multiplier
+const bubbleGapRem = 3; // Gap for horizontal and vertical spacing (1.25rem = 20px)
 
-// Using videos from the public folder
+// Animation duration (seconds)
+const ANIMATION_DURATION_S = ROW_COUNT * 3.5;
+
+// Video sources
 const VIDEO_SOURCES = [
   '/city.mp4',
   '/concert.mp4',
@@ -19,7 +22,7 @@ const VIDEO_SOURCES = [
 
 const getRandomVideo = () => VIDEO_SOURCES[Math.floor(Math.random() * VIDEO_SOURCES.length)];
 
-// Define keyframes for scroll-up animation
+// Scroll-up keyframes for animation
 const scrollUpKeyframes = `
   @keyframes scroll-up {
     0% { transform: translateY(0); }
@@ -27,26 +30,34 @@ const scrollUpKeyframes = `
   }
 `;
 
-// --- Helper Components (defined outside main component to prevent re-creation) ---
-
 interface BrickProps {
   videoSrc: string;
 }
 
-const Brick: React.FC<BrickProps> = ({ videoSrc }) => (
-  <div 
-    className="w-[12rem] h-[4rem] rounded-full shadow-lg overflow-hidden relative"
-  >
-    <video 
-      src={videoSrc}
-      className="absolute inset-0 w-full h-full object-cover"
-      autoPlay
-      muted
-      loop
-      playsInline
-    />
-  </div>
-);
+const Brick: React.FC<BrickProps> = ({ videoSrc }) => {
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.load();
+      videoRef.current.play().catch(e => console.error('Video play error:', e));
+    }
+  }, [videoSrc]);
+
+  return (
+    <div className="w-[18rem] h-[8rem] rounded-full shadow-lg overflow-hidden relative">
+      <video
+        ref={videoRef}
+        src={videoSrc}
+        className="absolute inset-0 w-full h-full object-cover"
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
+    </div>
+  );
+};
 
 interface RowProps {
   layout: 'A' | 'B';
@@ -55,20 +66,28 @@ interface RowProps {
 }
 
 const Row: React.FC<RowProps> = ({ layout, videos, rowIndex }) => {
-  // Unique key for each brick within the doubled list
   const key1 = `brick-${rowIndex}-0`;
   const key2 = `brick-${rowIndex}-1`;
 
-  // Layout 'A' bricks start at the left edge. They meet at the 12rem mark.
-  // Layout 'B' bricks are positioned so the first brick is centered at that 12rem meeting point.
-  // A 12rem-wide brick centered at 12rem must start at 6rem (12 - 12/2).
-  // The second brick in layout 'B' follows, starting at 18rem (6 + 12).
+  const spacing = `${bubbleGapRem}rem`;
+
+  // Horizontal positions for bricks depending on layout
   const brickStyles = layout === 'A'
-    ? [{ left: '0rem' }, { left: '12rem' }]
-    : [{ left: '6rem' }, { left: '18rem' }];
+    ? [{ left: '0rem' }, { left: `calc(18rem + ${spacing})` }]
+    : [{ left: '9rem' }, { left: `calc(27rem + ${spacing})` }];
+
+  // Vertical margin equal to the gap
+  const marginVertical = bubbleGapRem;
 
   return (
-    <div className="relative w-[36rem] my-2 h-[4rem]">
+    <div
+      className="relative w-[54rem]"
+      style={{
+        marginTop: `${marginVertical}rem`,
+        marginBottom: `${marginVertical}rem`,
+        height: '6.5rem'
+      }}
+    >
       <div key={key1} className="absolute" style={brickStyles[0]}>
         <Brick videoSrc={videos[0]} />
       </div>
@@ -79,16 +98,14 @@ const Row: React.FC<RowProps> = ({ layout, videos, rowIndex }) => {
   );
 };
 
-
-// --- Main RollingWall Component ---
-
 interface RowData {
   id: number;
   layout: 'A' | 'B';
   videos: [string, string];
 }
 
-const RollingWall: React.FC = () => {
+const VideoWall: React.FC = () => {
+  // Initialize rows
   const initialRows = useMemo<RowData[]>(() =>
     Array.from({ length: ROW_COUNT }, (_, i) => ({
       id: i,
@@ -96,41 +113,42 @@ const RollingWall: React.FC = () => {
       videos: [getRandomVideo(), getRandomVideo()],
     })), []);
 
-  // Duplicate the rows to create a seamless loop
+  // Duplicate rows for seamless animation
   const doubledRows = [...initialRows, ...initialRows];
-  
-  // Calculate viewport height to show ~6 rows. Each row is 4rem high with 1rem total margin (my-2).
-  const viewportHeight = `calc(6 * (4rem + 0.5rem * 2))`; 
-  
-  // We're not using Tailwind's animation class because we need to define our own keyframes
+
+  // Calculate viewport height for ~6 rows with vertical spacing
+  const viewportHeight = `calc(6 * (7.2rem + ${bubbleGapRem * 2}rem))`;
+
   const animationStyle = {
     animation: `scroll-up ${ANIMATION_DURATION_S}s linear infinite`
   };
 
   return (
-    <div 
-      className="relative overflow-hidden w-full h-full" 
-    >
-      <div className="w-full h-full flex items-center justify-center">
-        <style dangerouslySetInnerHTML={{ __html: scrollUpKeyframes }} />
-        <div 
-          className="relative overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]" 
-          style={{ height: '100%', width: '100%' }}
-        >
-          <div style={animationStyle}>
-            {doubledRows.map((row, index) => (
-              <Row 
-                key={`${row.id}-${index}`} 
-                layout={row.layout} 
-                videos={row.videos} 
-                rowIndex={index} 
-              />
-            ))}
-          </div>
+    <div className="relative overflow-hidden w-full h-full">
+      <style dangerouslySetInnerHTML={{ __html: scrollUpKeyframes }} />
+      <div
+        className="relative overflow-hidden"
+        style={{ height: viewportHeight, width: '100%' }}
+      >
+        <div className="w-full" style={animationStyle}>
+          {doubledRows.map((row, index) => (
+            <Row
+              key={`${row.id}-${index}`}
+              layout={row.layout}
+              videos={row.videos}
+              rowIndex={index}
+            />
+          ))}
         </div>
       </div>
-    </div>
+      {/* Top fade-out gradient */}
+      <div className="absolute top-0 left-0 right-0 h-[20px] bg-gradient-to-b from-slate-900 to-transparent z-10 pointer-events-none" aria-hidden="true"></div>
+      
+      {/* Bottom fade-out gradient */}
+      <div className="absolute bottom-0 left-0 right-0 h-[20px] bg-gradient-to-t from-slate-900 to-transparent z-10 pointer-events-none" aria-hidden="true"></div>
+
+    </div>    
   );
 };
 
-export default RollingWall;
+export default  VideoWall;

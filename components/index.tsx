@@ -19,12 +19,6 @@ export { default as Toolkit } from './Toolkit';
 export { default as Hero } from './Hero';
 export { default as VideoWall } from './VideoWall';
 
-
-// Card components
-export { Card1 } from './cards/Card1';
-export { Card2 } from './cards/Card2';
-export { Card3 } from './cards/Card3';
-
 // Custom components
 export { default as CustomButton } from './CustomButton';
 export { default as CustomTextarea } from './CustomTextarea';

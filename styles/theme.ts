@@ -11,11 +11,12 @@ export const colors = {
   bgDarker: '#000000',
   bgCard: '#1C1C1E',
   bgCardAlt: '#2A2A2B',
+  bgExclusive: '#181818',
   
   // Border colors
   borderDark: '#2C2C2E',
   borderLight: '#3C3C3E',
-  borderMedium: '#3C3C3E',
+  borderMedium: '#3B3B3B55',
   
   // Text colors
   textPrimary: '#FFFFFF',

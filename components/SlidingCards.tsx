@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect, ReactNode } from 'react';
-import CreativeCard from './cards/CreativeCard';
-import LearnCard from './cards/LearnCard';
-import InsightCard from './cards/InsightCard';
-import { Exclusive } from './cards/Exclusive';
+import Exclusive from './cards/Exclusive';
+import Engage from './cards/Engage';
+import Grow from './cards/Grow';
 
 interface SlidingCardsProps {
   children?: ReactNode;
@@ -14,10 +13,9 @@ export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
   
   // Use provided children or default to the card components
   const cardComponents = [
-    <CreativeCard key="creative" />,
-    <LearnCard key="learn" />,
-    <InsightCard key="insight" />,
-    <Exclusive key="exclusive" />
+    <Exclusive key="exclusive" />,
+    <Engage key="engage" />,
+    <Grow key="grow" />
   ];
   const childrenArray = children ? React.Children.toArray(children) : cardComponents;
   const numCards = childrenArray.length;
