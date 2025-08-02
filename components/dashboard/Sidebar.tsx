@@ -9,7 +9,7 @@ import KyozoLogo from '../ui/KyozoLogo';
 import { colors, borderRadius, fontWeights } from '../../styles/theme';
 
 const Sidebar: React.FC = () => {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
 
   return (
     <aside className={`w-64 bg-[${colors.bgCard}] h-full flex flex-col border-r border-[${colors.borderDark}]`}>
@@ -21,6 +21,35 @@ const Sidebar: React.FC = () => {
           </div>
         </Link>
       </div>
+      
+      {/* User avatar */}
+      {user && (
+        <div className="px-6 pb-4">
+          <div className="flex items-center space-x-3">
+            {user.photoURL ? (
+              <div className={`w-10 h-10 rounded-full overflow-hidden border border-[${colors.borderLight}]`}>
+                <Image 
+                  src={user.photoURL} 
+                  alt="Profile" 
+                  width={40} 
+                  height={40} 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ) : (
+              <div className={`w-10 h-10 rounded-full bg-[${colors.bgDarker}] border border-[${colors.borderLight}] flex items-center justify-center`}>
+                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+              </div>
+            )}
+            <div className="text-sm">
+              <p className={`text-[${colors.textPrimary}] ${fontWeights.medium}`}>{user.displayName || 'User'}</p>
+              <p className={`text-[${colors.textSecondary}] text-xs truncate max-w-[150px]`}>{user.email || user.phoneNumber}</p>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Main navigation */}
       <nav className="flex-1 px-4 py-6">
