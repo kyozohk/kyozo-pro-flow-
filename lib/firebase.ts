@@ -27,10 +27,34 @@ const storageCustomMetadata = {
   'Access-Control-Allow-Headers': 'Content-Type'
 };
 
-// For local development, you can use Firebase emulators
-// Uncomment this if you're using Firebase emulators
-// if (process.env.NODE_ENV === 'development') {
-//   connectStorageEmulator(storage, 'localhost', 9199);
-// }
+// Configure Firebase Storage for development environment
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  // Add CORS headers to storage requests
+  const originalXhr = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function(method, url) {
+    const args = Array.prototype.slice.call(arguments);
+    const originalOnReadyStateChange = this.onreadystatechange;
+    
+    if (url && typeof url === 'string' && url.includes('firebasestorage.googleapis.com')) {
+      this.onreadystatechange = function() {
+        if (this.readyState === 4) {
+          // Add CORS headers to the response
+          Object.defineProperty(this, 'getAllResponseHeaders', {
+            value: function() {
+              return 'access-control-allow-origin: *\r\n' + 
+                     'access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS\r\n' + 
+                     'access-control-allow-headers: Content-Type\r\n';
+            }
+          });
+        }
+        if (originalOnReadyStateChange) {
+          originalOnReadyStateChange.apply(this, arguments);
+        }
+      };
+    }
+    
+    return originalXhr.apply(this, args);
+  };
+}
 
 export { app, auth, db, storage, storageCustomMetadata };

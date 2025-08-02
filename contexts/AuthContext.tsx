@@ -99,15 +99,41 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Sign up with phone
   const signUpWithPhone = async (phoneNumber: string) => {
     try {
+      // Create a dynamic recaptcha verifier
       const recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
         size: 'invisible',
+        callback: () => {
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
+          console.log('reCAPTCHA verified');
+        },
+        'expired-callback': () => {
+          // Response expired. Ask user to solve reCAPTCHA again.
+          console.log('reCAPTCHA expired');
+        }
       });
       
-      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
-      return confirmationResult;
+      // Format phone number if needed (ensure it has country code)
+      const formattedPhoneNumber = phoneNumber.startsWith('+') ? phoneNumber : `+${phoneNumber}`;
+      
+      // Send verification code
+      const confirmationResult = await signInWithPhoneNumber(auth, formattedPhoneNumber, recaptchaVerifier);
+      
+      // Return the verification ID for later use
+      return {
+        verificationId: confirmationResult.verificationId,
+        confirm: confirmationResult.confirm
+      };
     } catch (error) {
       console.error("Error signing up with phone:", error);
       throw error;
+    } finally {
+      // Clean up any recaptcha widgets
+      try {
+        // @ts-ignore - This is a workaround to clear recaptcha
+        window.recaptchaVerifier = null;
+      } catch (e) {
+        // Ignore cleanup errors
+      }
     }
   };
 

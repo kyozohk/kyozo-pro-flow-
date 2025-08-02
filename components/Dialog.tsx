@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { colors, fontSizes, fontWeights, borderRadius } from '../styles/theme';
 
 interface DialogProps {
   title: string;
@@ -44,14 +45,14 @@ const Dialog: React.FC<DialogProps> = ({ title, onClose, children }) => {
       
       {/* Animated Dialog Container */}
       <div
-        className={`relative z-10 w-full max-w-lg text-white transition-[clip-path] duration-500 ease-in-out`}
+        className={`relative z-10 w-full max-w-lg text-[${colors.textPrimary}] transition-[clip-path] duration-500 ease-in-out`}
         style={{ clipPath: isOpen ? 'inset(0 0%)' : 'inset(0 50%)' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* The actual dialog content with border and background */}
-        <div className="relative rounded-3xl bg-gradient-to-br from-purple-600 via-pink-500 to-blue-500 p-[1px] shadow-2xl">
-            <div className="bg-[#1C1C1E] rounded-[23px] p-8 md:p-12">
-                <h2 id="dialog-title" className="text-5xl md:text-6xl font-bold text-center mb-12">{title}</h2>
+        <div className={`relative ${borderRadius['3xl']} bg-gradient-to-br from-[${colors.gradientStart}] via-[${colors.gradientMiddle}] to-[${colors.gradientEnd}] p-[1px] shadow-2xl`}>
+            <div className={`bg-[${colors.bgCard}] ${borderRadius['3xl']} p-8 md:p-12`}>
+                <h2 id="dialog-title" className={`${fontSizes['5xl']} md:${fontSizes['6xl']} ${fontWeights.bold} text-center mb-12`}>{title}</h2>
                 <div className="space-y-8">
                     {children}
                 </div>

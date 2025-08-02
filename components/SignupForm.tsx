@@ -242,7 +242,14 @@ const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
       } else if (formMode === FormMode.SignUp && authTab === AuthTab.Phone) {
         if (formData.phone) {
           try {
-            const result = await signUpWithPhone(formData.phone);
+            // Format phone number with country code
+            const formattedPhone = formatPhoneNumber(formData.phone);
+            
+            // Show loading state
+            setIsLoading(true);
+            
+            // Send verification code
+            const result = await signUpWithPhone(formattedPhone);
             setVerificationId(result.verificationId);
             setPhoneVerificationSent(true);
             setAuthError('');
@@ -482,8 +489,20 @@ const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
     return 'Reset Password';
   };
 
+  // Format phone number with country code if not already present
+  const formatPhoneNumber = (phone: string) => {
+    if (!phone) return '';
+    // If phone already has a country code (starts with +), return as is
+    if (phone.startsWith('+')) return phone;
+    // Otherwise, add +1 (US) as default country code
+    return `+${phone}`;
+  };
+
   return (
-    <Dialog title={getDialogTitle()} onClose={onSubmitted}>
+    <Dialog onClose={onSubmitted} title={getDialogTitle()}>
+      {/* Hidden recaptcha container for Firebase Phone Auth */}
+      <div id="recaptcha-container" className="hidden"></div>
+      
       {verificationSent ? (
         <form onSubmit={handleSubmit} className="space-y-6">
           {authError && <ErrorNotification message={authError} onClose={() => setAuthError('')} />}

@@ -1,21 +1,22 @@
 import React from 'react';
+import { colors, borderRadius, fontWeights, fontSizes } from '../../styles/theme';
 
 const ImageContainer = ({ className = '', src = '' }: { className?: string, src?: string }) => (
-    <div className={`absolute rounded-2xl overflow-hidden shadow-2xl border border-white/10 ${className}`}>
+    <div className={`absolute ${borderRadius['2xl']} overflow-hidden shadow-2xl border border-[${colors.borderLight}] ${className}`}>
         <img src={src} className="w-full h-full object-cover" alt="" />
     </div>
 );
 
 export const Card1: React.FC = () => (
-    <div className="w-full h-full bg-[#1C1C1C] rounded-3xl p-8 md:p-12 flex items-center overflow-hidden border border-white/10 shadow-[0_0_40px_rgba(255,255,255,0.05)]">
+    <div className={`w-full h-full bg-[${colors.bgCard}] ${borderRadius['3xl']} p-8 md:p-12 flex items-center overflow-hidden border border-[${colors.borderLight}] shadow-[0_0_40px_rgba(255,255,255,0.05)]`}>
         <div className="w-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
             <div className="w-full md:w-2/5 space-y-6 text-center md:text-left z-10">
-                <p className="text-sm font-bold tracking-[0.2em] text-gray-400 uppercase">INSIDER ACCESS</p>
-                <h2 className="text-4xl md:text-5xl font-black leading-tight">Exclusive access and insights</h2>
-                <p className="text-gray-300 text-lg">
+                <p className={`text-sm ${fontWeights.bold} tracking-[0.2em] text-[${colors.textSecondary}] uppercase`}>INSIDER ACCESS</p>
+                <h2 className={`${fontSizes['4xl']} md:${fontSizes['5xl']} ${fontWeights.black} leading-tight`}>Exclusive access and insights</h2>
+                <p className={`text-[${colors.textSecondary}] ${fontSizes.lg}`}>
                     Experience the creative world through an insider's lens. Kyozo is an eco-system of creative communities - that gives you exclusive access to updates and insights from the creative luminaries driving cultural evolution.
                 </p>
-                <button className="border border-gray-500 rounded-full px-8 py-3 text-white font-bold hover:bg-white hover:text-black transition-colors">
+                <button className={`border border-[${colors.borderMedium}] ${borderRadius.full} px-8 py-3 text-[${colors.textPrimary}] ${fontWeights.bold} hover:bg-[${colors.textPrimary}] hover:text-[${colors.bgDarker}] transition-colors`}>
                     Join the waitlist
                 </button>
             </div>

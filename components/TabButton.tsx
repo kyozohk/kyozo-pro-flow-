@@ -1,5 +1,5 @@
-
 import React from 'react';
+import { colors, fontWeights, borderRadius, fontSizes } from '../styles/theme';
 
 interface TabButtonProps {
   label: string;
@@ -11,8 +11,8 @@ const TabButton: React.FC<TabButtonProps> = ({ label, isActive, onClick }) => {
   return (
     <button
       onClick={onClick}
-      className={`w-full text-center py-2.5 rounded-full text-sm font-semibold transition-colors duration-300 ease-in-out ${
-        isActive ? 'bg-[#1C1C1E] text-white shadow-md' : 'text-gray-400 hover:bg-[#3A3A3C]'
+      className={`w-full text-center py-2.5 ${borderRadius.full} ${fontSizes.sm} ${fontWeights.semibold} transition-colors duration-300 ease-in-out ${
+        isActive ? `bg-[${colors.bgCard}] text-[${colors.textPrimary}] shadow-md` : `text-[${colors.textSecondary}] hover:bg-[${colors.borderDark}]`
       }`}
     >
       {label}
