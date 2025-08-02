@@ -1,12 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Image from "next/image";
 import { Heading1 } from "./ui/Typography";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex flex-col justify-center items-center text-center overflow-x-hidden">
+    <section className="relative h-[90vh] flex flex-col justify-center items-center text-center overflow-x-hidden">
       {/* Top-left radial purple gradient (shorter height) */}
       <div
         className="absolute top-[-100px] left-0 rounded-full -translate-x-1/3 -translate-y-1/3"
@@ -53,11 +52,7 @@ const Hero = () => {
           xmlns="http://www.w3.org/2000/svg"
           className="w-full h-full"
         >
-          <motion.g
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          >
+          <g>
             <circle
               cx="400"
               cy="400"
@@ -74,7 +69,7 @@ const Hero = () => {
               strokeOpacity="1.0"
               strokeWidth="60"
             />
-          </motion.g>
+          </g>
           <defs>
             <linearGradient
               id="gold_gradient"
@@ -92,12 +87,8 @@ const Hero = () => {
       </div>
 
       {/* Bottom Left Shape */}
-      <motion.div
-        className="absolute bottom-[-280px] left-0 z-0"
-        style={{ transform: "translateY(calc(75% + 100px))" }}
-        initial={{ opacity: 0, x: -50, y: 50 }}
-        animate={{ opacity: 1, x: 0, y: 0 }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+      <div
+        className="absolute bottom-0 left-0 z-0"
       >
         <Image
           src="/bottom-left.png"
@@ -106,15 +97,11 @@ const Hero = () => {
           height={300}
           className="opacity-80"
         />
-      </motion.div>
+      </div>
 
       {/* Bottom Right Shape */}
-      <motion.div
-        className="absolute bottom-[-140px] right-[-10px] z-0"
-        style={{ transform: "translateY(calc(75% + 100px))" }}
-        initial={{ opacity: 0, x: 50, y: 50 }}
-        animate={{ opacity: 1, x: 0, y: 0 }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.6 }}
+      <div
+        className="absolute bottom-0 right-0 z-0"
       >
         <Image
           src="/bottom-right.png"
@@ -123,18 +110,13 @@ const Hero = () => {
           height={300}
           className="opacity-80"
         />
-      </motion.div>
+      </div>
 
       {/* Main Heading */}
       <div className="z-10 flex flex-col items-center max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-          className="z-10 mb-8"
-        >
+        <div className="z-10 mb-8">
           <Heading1>Discover your creative universe</Heading1>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

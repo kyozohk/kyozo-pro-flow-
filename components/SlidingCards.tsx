@@ -27,12 +27,18 @@ export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
     const handleScroll = () => {
       const { top, height } = container.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      const scrollableDistance = height - viewportHeight;
-      const scrolled = -top;
+      // Add a threshold to delay the effect until the component is more in view
+      const threshold = viewportHeight * 0.2;
       
-      if (scrollableDistance > 0) {
-        const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
-        setScrollProgress(progress);
+      // Only start the effect when the container is at least partially in view
+      if (top < viewportHeight && top > -height + threshold) {
+        const scrollableDistance = height - viewportHeight + threshold;
+        const scrolled = Math.max(0, -top + threshold);
+        
+        if (scrollableDistance > 0) {
+          const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
+          setScrollProgress(progress);
+        }
       }
     };
 
@@ -48,8 +54,8 @@ export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
   const progressInSegment = cardProgress - activeCardIndex;
 
   return (
-    <div ref={containerRef} style={{ height: `${100 + 100 * cardsToScrollPast}vh` }} className="relative mx-12 pb-12">
-      <div className="sticky top-0 h-screen w-full">
+    <div ref={containerRef} style={{ height: `${60 + 60 * cardsToScrollPast}vh` }} className="relative mx-12 pb-12">
+      <div className="sticky top-[20vh] h-[60vh] w-full">
         {childrenArray.map((child, i) => {
           let transform = 'translateY(100%) scale(1)';
           const zIndex = i;
