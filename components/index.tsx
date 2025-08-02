@@ -9,7 +9,7 @@ export { default as ProfileCompletion } from './auth/ProfileCompletion';
 // Main components
 export { default as Bottom } from '@/components/Bottom'
 export { default as BubbleMarquee } from './BubbleMarquee';
-export { default as ConnectExplore } from './ConnectExpore';
+export { default as ConnectExplore } from './ConnectExplore';
 export { default as Footer } from './Footer';
 export { default as Header } from './Header';
 export { Marquee } from './Marquee';

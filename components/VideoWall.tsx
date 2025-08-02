@@ -142,10 +142,10 @@ const VideoWall: React.FC = () => {
         </div>
       </div>
       {/* Top fade-out gradient */}
-      <div className="absolute top-0 left-0 right-0 h-[20px] bg-gradient-to-b from-slate-900 to-transparent z-10 pointer-events-none" aria-hidden="true"></div>
+      <div className="absolute top-0 left-0 right-0 h-[40px] bg-gradient-to-b from-slate-900 to-transparent z-10 pointer-events-none" aria-hidden="true"></div>
       
       {/* Bottom fade-out gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-[20px] bg-gradient-to-t from-slate-900 to-transparent z-10 pointer-events-none" aria-hidden="true"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-[40px] bg-gradient-to-t from-slate-900 to-transparent z-10 pointer-events-none" aria-hidden="true"></div>
 
     </div>    
   );

@@ -30,8 +30,11 @@ const BaseCard: React.FC<BaseCardProps> = ({
 }) => {
   return (
     <div 
-      className={`border-[0.5px] rounded-[40px] m-8 mb-50 mt-20 relative w-full mx-auto overflow-hidden h-[calc(100vh-10rem)] ${className}`}
-      style={{ backgroundColor: bgColor, borderColor: borderColor }}
+      className={`rounded-[40px] m-8 mb-50 mt-20 relative w-full mx-auto overflow-hidden h-[calc(100vh-10rem)] ${className}`}
+      style={{ 
+        backgroundColor: bgColor, 
+        border: `1px solid ${borderColor}`,
+      }}
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 h-full">
         {/* Left Column: Content */}

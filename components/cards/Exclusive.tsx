@@ -5,7 +5,7 @@ import { colors, fontSizes, fontWeights } from '../../styles/theme';
 
 const Exclusive: React.FC = () => {
   return (
-    <BaseCard
+<BaseCard
       title="Exclusive access and insights"
       subtitle="INSIDER ACCESS"
       description="Experience the creative world through an insider's lens. Kyozo is an eco-system of creative communities - that gives you exclusive access to updates and insights from the creative luminaries driving cultural evolution."
