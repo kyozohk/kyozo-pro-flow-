@@ -6,13 +6,13 @@ export default function Home() {
     <div className="relative overflow-x-hidden">
       <Hero />
       <div className="relative z-10">
-        <ConnectExplore />
+      <SlidingCards />
+      <ConnectExplore />
         <Toolkit />      
         <Marquee />
         <Plans />
         <BubbleMarquee />
         <Bottom />
-        <SlidingCards />
         <Footer />
       </div>
     </div>
