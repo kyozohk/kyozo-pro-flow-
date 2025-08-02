@@ -54,7 +54,7 @@ export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
   const progressInSegment = cardProgress - activeCardIndex;
 
   return (
-    <div ref={containerRef} style={{ height: `${60 + 60 * cardsToScrollPast}vh` }} className="relative mx-12 pb-12">
+    <div ref={containerRef} style={{ height: `${60 + 60 * cardsToScrollPast}vh` }} className="relative mx-12 pb-12 overflow-x-hidden">
       <div className="sticky top-[20vh] h-[60vh] w-full">
         {childrenArray.map((child, i) => {
           let transform = 'translateY(100%) scale(1)';
