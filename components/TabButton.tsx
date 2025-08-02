@@ -15,7 +15,7 @@ const TabButton: React.FC<TabButtonProps> = ({ label, isActive, onClick }) => {
         isActive ? `bg-[${colors.bgCard}] text-[${colors.textPrimary}] shadow-md` : `text-[${colors.textSecondary}] hover:bg-[${colors.borderDark}]`
       }`}
     >
-      {label}
+      {label}when
     </button>
   );
 };

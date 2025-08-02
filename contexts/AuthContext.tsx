@@ -25,9 +25,11 @@ interface AuthContextType {
   user: User | null; // Alias for currentUser for easier access
   loading: boolean;
   signUpWithEmail: (email: string, password: string) => Promise<any>;
+  signUp: (email: string, password: string) => Promise<any>; // Alias for signUpWithEmail
   signUpWithPhone: (phoneNumber: string) => Promise<any>;
   verifyPhoneCode: (verificationId: string, code: string) => Promise<any>;
   signInWithEmail: (email: string, password: string) => Promise<any>;
+  signIn: (email: string, password: string) => Promise<any>; // Alias for signInWithEmail
   signInWithGoogle: () => Promise<any>;
   completeProfile: (firstName: string, lastName: string, avatarFile?: File) => Promise<void>;
   checkEmailVerified: () => Promise<boolean>;
@@ -240,18 +242,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const value = {
     currentUser,
-    user: currentUser, // Alias for currentUser
+    user: currentUser, // Alias for easier access
     loading,
     signUpWithEmail,
+    signUp: signUpWithEmail, // Alias for easier access
     signUpWithPhone,
     verifyPhoneCode,
     signInWithEmail,
+    signIn: signInWithEmail, // Alias for easier access
     signInWithGoogle,
     completeProfile,
     checkEmailVerified,
     sendVerificationEmail,
     logout,
-    signOut: logout // Alias for logout
+    signOut: logout // Alias for easier access
   };
 
   return (

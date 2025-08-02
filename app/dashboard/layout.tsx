@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -21,9 +21,15 @@ export default function DashboardLayout({
     );
   }
   
-  // Redirect to home if not authenticated
-  if (!user) {
-    router.push('/');
+  // Use useEffect for navigation instead of doing it during render
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/');
+    }
+  }, [user, loading, router]);  // Add dependencies
+  
+  // Return null while redirecting
+  if (!loading && !user) {
     return null;
   }
   
