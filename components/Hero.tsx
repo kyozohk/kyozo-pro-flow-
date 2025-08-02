@@ -5,7 +5,7 @@ import { Heading1 } from "./ui/Typography";
 
 const Hero = () => {
   return (
-    <section className="relative h-[90vh] flex flex-col justify-center items-center text-center overflow-x-hidden">
+    <section className="relative min-h-[90vh] flex flex-col justify-center items-center text-center overflow-x-hidden overflow-y-visible">
       {/* Top-left radial purple gradient (shorter height) */}
       <div
         className="absolute top-[-100px] left-0 rounded-full -translate-x-1/3 -translate-y-1/3"

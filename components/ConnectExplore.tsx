@@ -6,7 +6,7 @@ import { colors } from "../styles/theme";
 
 const ConnectExplore: React.FC = () => {
   return (
-    <div className="px-4" style={{ marginTop: "-20vh" }}>
+    <div className="px-4 pt-16">
       <div
         className="rounded-[40px] mx-auto relative w-full overflow-hidden max-w-[calc(100vw-6rem)]"
         style={{
