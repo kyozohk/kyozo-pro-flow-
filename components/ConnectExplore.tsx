@@ -10,7 +10,7 @@ const ExpandingCircles: React.FC = () => {
   const [renderTime, setRenderTime] = useState(Date.now());
 
   const EXPANSION_RATE_PX_PER_S = 120; // Slower expansion
-  const MAX_DIAMETER_PX = 1200; // Larger maximum diameter
+  const MAX_DIAMETER_PX = 1600; // Even larger maximum diameter
   const CIRCLE_GAP_PX = 600; // Much larger gap between circles
   const STATE_UPDATE_INTERVAL_MS = 50;
   const BORDER_WIDTH = 35; // Much thicker border for the circles
@@ -55,7 +55,7 @@ const ExpandingCircles: React.FC = () => {
   }, []);
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden">
+    <div className="absolute inset-0 flex items-end justify-center z-0 pointer-events-none overflow-visible">
       {circles.map(circle => {
         const ageMs = renderTime - circle.createdAt;
         const diameter = (ageMs / 1000) * EXPANSION_RATE_PX_PER_S;
@@ -93,16 +93,17 @@ const ExpandingCircles: React.FC = () => {
 const ConnectExplore: React.FC = () => {
   return (
     <div 
-      className="rounded-[40px] mx-12 relative w-full overflow-hidden h-screen"
+      className="rounded-[40px] mx-12 relative w-full overflow-hidden"
       style={{ 
         backgroundColor: colors.bgExclusive, 
         border: `2px solid ${colors.borderMedium}`,
+        height: '80vh' // Reduced by 40% from 100vh
       }}
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 h-full">
         {/* Left Column: Content */}
         <div 
-          className="flex flex-col justify-end pb-16 lg:pb-20 z-10 px-8 md:px-12 lg:px-12"
+          className="flex flex-col justify-end ml-30 pb-16 lg:pb-20 z-10 px-8 md:px-12 lg:px-12"
           style={{ gridColumn: 'span 5 / span 5' }}
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
@@ -135,12 +136,12 @@ const ConnectExplore: React.FC = () => {
           
           {/* Phone image */}
           <div className="relative z-20 flex items-end justify-center pb-0">
-            <div className="overflow-hidden" style={{ height: '75vh' }}>
+            <div className="overflow-hidden" style={{ height: '90vh' }}>
               <Image 
                 src="/iphone.png" 
                 alt="iPhone" 
-                width={450} 
-                height={900} 
+                width={550} 
+                height={1100} 
                 className="object-contain translate-y-1/4"
                 style={{ marginBottom: '-10%' }}
               />
