@@ -11,8 +11,8 @@ export default function Home() {
       <Toolkit />      
       <Marquee />
       <Plans />
-      <Bottom />
       <BubbleMarquee />
+      <Bottom />
       <Footer />
     </div>
   );
