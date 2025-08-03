@@ -1,13 +1,15 @@
 import React from 'react';
+import { colors, shadows } from '../../styles/theme';
 
 const ImageContainer = ({ className = '', src = '' }: { className?: string, src?: string }) => (
-    <div className={`absolute rounded-2xl overflow-hidden shadow-2xl border border-white/10 ${className}`}>
+    <div className={`absolute rounded-2xl overflow-hidden shadow-2xl border border-[${colors.borderPrimary}] ${className}`}>
         <img src={src} className="w-full h-full object-cover" alt="" />
     </div>
 );
 
 export const Card1: React.FC = () => (
-    <div className="w-full h-full bg-[#1C1C1C] rounded-3xl p-8 md:p-12 flex items-center overflow-hidden border border-white/10 shadow-[0_0_40px_rgba(255,255,255,0.05)]">
+    <div className="w-full h-full flex items-center justify-center py-8" style={{ height: 'calc(100% + 50px)' }}>
+      <div className="w-full bg-[${colors.bgSecondary}] rounded-3xl p-8 md:p-12 flex items-center overflow-hidden border border-[${colors.borderPrimary}]" style={{ boxShadow: shadows.card, height: 'calc(90% + 80px)' }}>
         <div className="w-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
             <div className="w-full md:w-2/5 space-y-6 text-center md:text-left z-10">
                 <p className="text-sm font-bold tracking-[0.2em] text-gray-400 uppercase">INSIDER ACCESS</p>
@@ -29,5 +31,6 @@ export const Card1: React.FC = () => (
                 <ImageContainer className="w-[22%] h-[28%] bottom-[5%] right-[40%]" src="https://images.pexels.com/photos/2085998/pexels-photo-2085998.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" />
             </div>
         </div>
+      </div>
     </div>
 );

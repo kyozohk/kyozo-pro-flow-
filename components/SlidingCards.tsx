@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, ReactNode } from 'react';
 import { Card1 } from './cards/Card1';
 import { Card2 } from './cards/Card2';
 import { Card3 } from './cards/Card3';
+import { spacing } from '../styles/theme';
 
 interface SlidingCardsProps {
   children?: ReactNode;
@@ -44,23 +45,22 @@ export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
   const progressInSegment = cardProgress - activeCardIndex;
 
   return (
-    <div ref={containerRef} style={{ height: `${100 + 80 * cardsToScrollPast}vh` }} className="relative w-full px-10 mx-auto">
+    <div ref={containerRef} style={{ height: `${100 + 80 * cardsToScrollPast}vh`, paddingLeft: spacing['10'], paddingRight: spacing['10'] }} className="relative w-full mx-auto">
       <div className="sticky top-[10vh] h-[80vh] w-full">
         {childrenArray.map((child, i) => {
-          // Add a 20px gap between cards
-          const cardGap = 100;
+          // Cards now have their own spacing with inner bordered divs
+          const cardGap = 0; // No additional gap needed between cards
           let transform = `translateY(calc(100% + ${cardGap}px)) scale(1)`;
           const zIndex = i;
 
           if (i <= activeCardIndex) {
-            // Add spacing between stacked cards
-            const stackOffset = (activeCardIndex - i) * cardGap;
+            // Cards stack directly on top of each other
+            const stackOffset = 0;
             transform = `translateY(${stackOffset}px) scale(1)`;
           } else if (i === activeCardIndex + 1) {
-            // Gradually reduce the gap as the card slides up
+            // Smoothly slide up the next card
             const translateY = 100 - progressInSegment * 100;
-            const gapAdjustment = cardGap * (1 - progressInSegment);
-            transform = `translateY(calc(${translateY}% + ${gapAdjustment}px)) scale(1)`;
+            transform = `translateY(${translateY}%) scale(1)`;
           }
           
           if (scrollProgress === 1 && i === numCards - 1) {

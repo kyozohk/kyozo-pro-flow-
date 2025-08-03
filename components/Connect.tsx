@@ -2,10 +2,11 @@
 import React from 'react';
 import Image from 'next/image';
 import { Heading2, Paragraph, Button } from './ui/Typography';
+import { colors } from '../styles/theme';
 
 const Connect: React.FC = () => {
   return (
-    <section className="relative overflow-hidden bg-[#0D0D0D]">
+    <section className="relative overflow-hidden bg-[${colors.bgPrimary}]">
       <div className="absolute inset-0 z-0 opacity-40">
         <div className="absolute -top-32 -left-48 w-96 h-96 bg-purple-900/50 rounded-full filter blur-3xl"></div>
         <div className="absolute -bottom-32 -right-48 w-96 h-96 bg-cyan-900/50 rounded-full filter blur-3xl"></div>

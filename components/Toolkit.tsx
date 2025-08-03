@@ -1,8 +1,9 @@
 import React from 'react';
 import Marquee from './Marquee';
+import { colors, borderRadius, shadows } from '../styles/theme';
 
 const MarqueeItem = ({ text }: { text: string }) => (
-  <div className="flex items-center space-x-3 bg-[#1A1A1A] border border-zinc-800 rounded-full px-5 py-3 shadow-md">
+  <div className="flex items-center space-x-3 bg-[${colors.bgSecondary}] border border-[${colors.borderPrimary}] rounded-full px-5 py-3" style={{ boxShadow: shadows.md }}>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-white">
       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z" clipRule="evenodd" />
     </svg>

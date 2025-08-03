@@ -1,13 +1,14 @@
 import React from 'react';
+import { colors, shadows } from '../../styles/theme';
 
 const Avatar = ({ className = '', src = '' }: { className?: string, src?: string }) => (
-    <div className={`absolute rounded-full overflow-hidden w-12 h-12 bg-zinc-700 border-2 border-zinc-600 shadow-lg ${className}`}>
+    <div className={`absolute rounded-full overflow-hidden w-12 h-12 bg-zinc-700 border-2 border-[${colors.borderPrimary}] shadow-lg ${className}`}>
         <img src={src} className="w-full h-full object-cover" alt="avatar" />
     </div>
 );
 
 const PerformancesChart = () => (
-    <div className="bg-zinc-900/50 backdrop-blur-sm p-4 rounded-2xl border border-white/10 shadow-xl">
+    <div className="bg-zinc-900/50 backdrop-blur-sm p-4 rounded-2xl border border-[${colors.borderPrimary}] shadow-xl">
         <div className="flex justify-between items-center mb-3">
             <h4 className="font-semibold text-sm flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-purple-400"><path fillRule="evenodd" d="M1 2.75A.75.75 0 0 1 1.75 2h16.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75Zm0 5A.75.75 0 0 1 1.75 7h16.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75ZM1.75 12h16.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Zm0 4.25a.75.75 0 0 0 0 1.5h16.5a.75.75 0 0 0 0-1.5H1.75Z" clipRule="evenodd" /></svg>
@@ -49,7 +50,8 @@ const GrowthChart = () => (
 );
 
 export const Card3: React.FC = () => (
-    <div className="w-full h-full bg-[#1C1C1C] rounded-3xl p-8 md:p-12 flex items-center overflow-hidden border border-white/10 shadow-[0_0_40px_rgba(255,255,255,0.05)]">
+    <div className="w-full h-full flex items-center justify-center py-8" style={{ height: 'calc(100% + 50px)' }}>
+      <div className="w-full bg-[${colors.bgSecondary}] rounded-3xl p-8 md:p-12 flex items-center overflow-hidden border border-[${colors.borderPrimary}]" style={{ boxShadow: shadows.card, height: 'calc(90% + 80px)' }}>
         <div className="w-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
             <div className="w-full md:w-2/5 space-y-6 text-center md:text-left z-10">
                 <p className="text-sm font-bold tracking-[0.2em] text-gray-400 uppercase">GO PRO</p>
@@ -72,5 +74,6 @@ export const Card3: React.FC = () => (
                 <div className="absolute w-5 h-5 rounded-full bg-blue-500/50 top-[45%] right-[50%] blur-md"></div>
             </div>
         </div>
+      </div>
     </div>
 );
