@@ -4,15 +4,13 @@ import {Connect, Hero, SlidingCards, Footer, Toolkit, Bottom, CoCircles, Marquee
 export default function Home() {
   return (
     <div className="">
-      <Hero />
+      <SlidingCards />
+      {/* <Hero /> */}
       <Connect />
       <Toolkit />      
       <Marquee />
       <Plans />
       <BubbleMarquee />
-      <Bottom />
-      {/* <CoCircles /> */}
-      <SlidingCards />
       <Footer />
     </div>
   );

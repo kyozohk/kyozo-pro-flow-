@@ -1,6 +1,5 @@
 
 import React from 'react';
-import CoCircles from './CoCircles';
 
 const CheckIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-zinc-400">
@@ -57,8 +56,6 @@ const Plans: React.FC = () => {
 
   return (
     <section className="relative py-24 sm:py-32 overflow-hidden">
-      <CoCircles />
-      
       <div className="relative z-10 max-w-5xl mx-auto px-4">
         <div className="flex flex-col lg:flex-row gap-8 justify-center items-stretch">
           <PlanCard 

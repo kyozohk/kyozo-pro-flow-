@@ -44,17 +44,23 @@ export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
   const progressInSegment = cardProgress - activeCardIndex;
 
   return (
-    <div ref={containerRef} style={{ height: `${100 + 80 * cardsToScrollPast}vh` }} className="relative max-w-7xl mx-auto">
+    <div ref={containerRef} style={{ height: `${100 + 80 * cardsToScrollPast}vh` }} className="relative w-full px-10 mx-auto">
       <div className="sticky top-[10vh] h-[80vh] w-full">
         {childrenArray.map((child, i) => {
-          let transform = 'translateY(100%) scale(1)';
+          // Add a 20px gap between cards
+          const cardGap = 100;
+          let transform = `translateY(calc(100% + ${cardGap}px)) scale(1)`;
           const zIndex = i;
 
           if (i <= activeCardIndex) {
-            transform = 'translateY(0) scale(1)';
+            // Add spacing between stacked cards
+            const stackOffset = (activeCardIndex - i) * cardGap;
+            transform = `translateY(${stackOffset}px) scale(1)`;
           } else if (i === activeCardIndex + 1) {
+            // Gradually reduce the gap as the card slides up
             const translateY = 100 - progressInSegment * 100;
-            transform = `translateY(${translateY}%) scale(1)`;
+            const gapAdjustment = cardGap * (1 - progressInSegment);
+            transform = `translateY(calc(${translateY}% + ${gapAdjustment}px)) scale(1)`;
           }
           
           if (scrollProgress === 1 && i === numCards - 1) {
