@@ -1,5 +1,6 @@
 import React from 'react';
 import CenterCircle from './CenterCircle';
+import { colors } from '../styles/theme';
 
 const ConcentricCircles: React.FC = () => {
   // Configuration for the rings, adjusted to match the image
@@ -9,12 +10,12 @@ const ConcentricCircles: React.FC = () => {
   const initialRadius = centerCircleRadius + strokeWidth / 2 + strokeWidth;
   const radiusIncrement = strokeWidth * 2; // Creates alternating black space equal to strokeWidth
 
-  // Colors inspired by the image, reduced to 4 rings
+  // Colors from theme
   const ringColors = [
-    '#E1C16E', // Gold/Ochre
-    '#C4B5FD', // Lavender
-    '#B97E89', // Dusty Rose
-    '#9AD1C5', // Teal/Mint
+    colors.svg.concentricRings.ring1, // Gold/Ochre
+    colors.svg.concentricRings.ring2, // Lavender
+    colors.svg.concentricRings.ring3, // Dusty Rose
+    colors.svg.concentricRings.ring4, // Teal/Mint
   ];
 
   // Dynamically calculate the SVG dimensions to fit all circles

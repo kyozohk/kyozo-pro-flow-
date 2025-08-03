@@ -38,6 +38,22 @@ export const colors = {
   success: '#4CAF50',
   error: '#FF5252',
   warning: '#FFC107',
+  
+  // SVG colors
+  svg: {
+    gold: '#EEC87E',
+    teal: 'rgba(64,192,172,0.3)',
+    orange: 'rgba(187, 98, 73, 0.3)',
+    purple: 'rgba(185,163,255,0.34)',
+    centerGradientStart: '#a7d8de',
+    centerGradientEnd: '#c3a3d7',
+    concentricRings: {
+      ring1: '#E1C16E', // Gold/Ochre
+      ring2: '#C4B5FD', // Lavender
+      ring3: '#B97E89', // Dusty Rose
+      ring4: '#9AD1C5', // Teal/Mint
+    }
+  },
 };
 
 export const fonts = {

@@ -39,7 +39,7 @@ const Toolkit: React.FC = () => {
       
       {/* Bottom right CenterCircle */}
       <motion.div
-        initial={{ x: 30, y: 30, opacity: 0 }}
+        initial={{ x: 10, y: 30, opacity: 0 }}
         animate={controlsRight}
         className="absolute right-0 bottom-0 z-10 w-[25%] h-auto transform translate-x-1/4 translate-y-1/4"
       >

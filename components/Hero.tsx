@@ -3,29 +3,30 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Heading1 } from "./ui/Typography";
+import { colors } from "../styles/theme";
 
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex flex-col justify-center items-center text-center">
-      {/* Top-left radial purple gradient (shorter height) */}
+      {/* Top-left radial teal gradient (shorter height) */}
       <div
         className="absolute top-[-100px] left-0 rounded-full -translate-x-1/3 -translate-y-1/3"
         style={{
           width: "1600px",
           height: "1000px", // shorter height
           background:
-            "radial-gradient(circle at center, rgba(64,192,172,0.3) 0%, rgba(11,11,12,0) 50%)",
+            `radial-gradient(circle at center, ${colors.svg.teal} 0%, rgba(11,11,12,0) 50%)`,
         }}
       ></div>
 
-      {/* Top-right radial teal gradient (shorter height) */}
+      {/* Top-right radial orange gradient (shorter height) */}
       <div
         className="absolute top-[-300px] right-0 [rounded-full translate-x-1/3 -translate-y-1/3"
         style={{
           width: "1000px",
           height: "1400px", // shorter height
           background:
-            "radial-gradient(circle at center, rgba(187, 98, 73, 0.3) 0%, rgba(11,11,12,0) 70%)",
+            `radial-gradient(circle at center, ${colors.svg.orange} 0%, rgba(11,11,12,0) 70%)`,
         }}
       ></div>
 
@@ -36,7 +37,7 @@ const Hero = () => {
           width: "600px",
           height: "600px",
           background:
-            "radial-gradient(circle at center, rgba(185,163,255,0.34) 0%, rgba(11,11,12,0) 70%)",
+            `radial-gradient(circle at center, ${colors.svg.purple} 0%, rgba(11,11,12,0) 70%)`,
         }}
       ></div>
 

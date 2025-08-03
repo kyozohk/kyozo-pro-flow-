@@ -7,14 +7,14 @@ import CustomButton from "./CustomButton";
 
 const Connect: React.FC = () => {
   return (
-    <div className="w-full flex items-center justify-center py-8" style={{ height: 'calc(100% + 140px)' }}>
+    <div className="w-full h-1 flex items-center justify-center py-8" style={{ height: 'calc(100% + 240px)' }}>
       <div
-        className="w-full rounded-3xl p-8 md:p-12 flex overflow-hidden border mx-10"
+        className="w-full rounded-3xl  flex overflow-hidden border mx-10"
         style={{ 
           backgroundColor: colors.card.background, 
           borderColor: colors.card.border, 
           boxShadow: shadows.card, 
-          height: '80%' 
+          // height: '80%' 
         }}
       >
         <div className="w-full flex flex-col md:flex-row items-center gap-8 md:gap-12">
@@ -46,7 +46,7 @@ const Connect: React.FC = () => {
                   alt="Kyozo app on smartphone"
                   width={300}
                   height={600}
-                  className="object-contain scale-125"
+                  className="object-contain scale-125 mt-40"
                   style={{ 
                     filter: `drop-shadow(0 20px 40px rgba(0,0,0,0.5))`,
                     transform: 'scale(1.25) translateY(10%)'
