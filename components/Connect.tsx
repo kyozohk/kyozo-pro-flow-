@@ -1,51 +1,64 @@
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
-import { Heading2, Paragraph, Button } from './ui/Typography';
-import { colors } from '../styles/theme';
+import React from "react";
+import Image from "next/image";
+import { colors, shadows, fonts } from "../styles/theme";
+import CustomButton from "./CustomButton";
 
 const Connect: React.FC = () => {
   return (
-    <section className="relative overflow-hidden bg-[${colors.bgPrimary}]">
-      <div className="absolute inset-0 z-0 opacity-40">
-        <div className="absolute -top-32 -left-48 w-96 h-96 bg-purple-900/50 rounded-full filter blur-3xl"></div>
-        <div className="absolute -bottom-32 -right-48 w-96 h-96 bg-cyan-900/50 rounded-full filter blur-3xl"></div>
-      </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-24 sm:py-32 lg:py-40">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className="text-center lg:text-left">
-            <Heading2>
+    <div className="w-full flex items-center justify-center py-8" style={{ height: 'calc(100% + 140px)' }}>
+      <div
+        className="w-full rounded-3xl p-8 md:p-12 flex overflow-hidden border mx-10"
+        style={{ 
+          backgroundColor: colors.card.background, 
+          borderColor: colors.card.border, 
+          boxShadow: shadows.card, 
+          height: '80%' 
+        }}
+      >
+        <div className="w-full flex flex-col md:flex-row items-center gap-8 md:gap-12">
+          {/* Left Column: Content */}
+          <div className="w-full md:w-1/2 text-center md:text-center z-10 flex flex-col justify-center h-full py-10">
+            <h2
+              className="text-4xl md:text-7xl font-bold leading-none tracking-tighter"
+              style={{ color: colors.card.headingText, fontFamily: fonts.card, letterSpacing: '-0.03em' }}
+            >
               Connect.
               <br />
               Explore.
               <br />
               Engage.
-            </Heading2>
-            <div className="mt-6 max-w-lg mx-auto lg:mx-0">
-              <Paragraph>
-                Connect with visionary creators and forward-thinking communities.
-              </Paragraph>
-            </div>
-            <div className="mt-10">
-              <Button>
+            </h2>
+            <div className="mt-4">
+              <CustomButton variant="card-outline">
                 Join the waitlist
-              </Button>
+              </CustomButton>
             </div>
           </div>
-          <div className="flex justify-center lg:justify-end -mr-8 lg:-mr-24">
-            <div className="relative w-[300px] h-[600px] transform rotate-12">
-               <Image 
-                  src="/iphone.png" 
+
+          {/* Right Column: Phone */}
+          <div className="w-full md:w-1/2 relative">            
+            <div className="relative z-10 h-full flex items-end justify-end overflow-hidden">
+              <div className="relative" style={{ width: '600px', height: '800px', marginBottom: '-100px', marginRight: '-50px' }}>
+                <Image
+                  src="/iphone.png"
                   alt="Kyozo app on smartphone"
                   width={300}
                   height={600}
-                  className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
-               />
+                  className="object-contain scale-125"
+                  style={{ 
+                    filter: `drop-shadow(0 20px 40px rgba(0,0,0,0.5))`,
+                    transform: 'scale(1.25) translateY(10%)'
+                  }}
+                  draggable={false}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

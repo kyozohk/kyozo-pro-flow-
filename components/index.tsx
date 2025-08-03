@@ -17,7 +17,9 @@ export { default as Plans } from './Plans';
 export { SlidingCards } from './SlidingCards';
 export { default as Toolkit } from './Toolkit';
 export { default as Hero } from './Hero';
-
+export { default as CenterCircle } from './CenterCircle';
+export { default as ConcentricCircles } from './ConcentricCircles';
+export { default as RevealText } from './RevealText';
 
 // Card components
 export { Card1 } from './cards/Card1';

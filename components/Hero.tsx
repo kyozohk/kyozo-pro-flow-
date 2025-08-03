@@ -93,7 +93,7 @@ const Hero = () => {
 
       {/* Bottom Left Shape */}
       <motion.div
-        className="absolute bottom-[-280px] left-0 z-0"
+        className="absolute bottom-[-350px] left-[0px] z-0"
         style={{ transform: "translateY(calc(75% + 100px))" }}
         initial={{ opacity: 0, x: -50, y: 50 }}
         animate={{ opacity: 1, x: 0, y: 0 }}
@@ -102,8 +102,8 @@ const Hero = () => {
         <Image
           src="/bottom-left.png"
           alt="Bottom Left Shape"
-          width={300}
-          height={300}
+          width={350}
+          height={350}
           className="opacity-80"
         />
       </motion.div>
