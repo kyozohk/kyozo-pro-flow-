@@ -56,7 +56,9 @@ export const Card3: React.FC = () => (
         <div className="w-full flex flex-col md:flex-row items-start gap-8 md:gap-12">
             <div className="w-full md:w-2/5 space-y-6 text-center md:text-left z-10">
                 <p className="text-sm font-bold tracking-[0.2em] uppercase" style={{ color: colors.card.tagText, fontFamily: fonts.card }}>GO PRO</p>
-                <h2 className="text-4xl md:text-5xl font-black leading-tight" style={{ color: colors.card.headingText, fontFamily: fonts.card }}>Grow your creative community</h2>
+                <h2 className="text-4xl md:text-7xl font-bold leading-none tracking-tighter"
+  style={{ color: colors.card.headingText, fontFamily: fonts.card, letterSpacing: '-0.03em' }}
+>Grow your creative community</h2>
                 <p className="text-lg" style={{ color: colors.card.bodyText, fontFamily: fonts.card }}>
                     Are you a creative professional, community organizer, or small business owner working within the creative industries? We understand the challenges of nurturing and growing a dedicated audience, so we built KyozoPro...
                 </p>
