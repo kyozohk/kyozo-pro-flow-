@@ -46,7 +46,7 @@ export const SlidingCards: React.FC<SlidingCardsProps> = ({ children }) => {
 
   return (
     <div ref={containerRef} style={{ height: `${100 + 120 * cardsToScrollPast}vh`, paddingLeft: spacing['10'], paddingRight: spacing['10'] }} className="relative w-full mx-auto">
-      <div className="sticky top-[10vh] h-[80vh] w-full">
+      <div className="sticky top-[1vh] h-[90vh] w-full">
         {childrenArray.map((child, i) => {
           // Cards now have their own spacing with inner bordered divs
           const cardGap = 0; // No additional gap needed between cards
