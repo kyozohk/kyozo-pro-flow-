@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { IoCheckmarkCircle } from "react-icons/io5";
+import { FaCircleCheck } from "react-icons/fa6";
 
 interface PricingPlan {
   name: string;
@@ -141,9 +141,9 @@ const PlanCard: React.FC<{ plan: PricingPlan }> = ({ plan }) => {
         <ul className="space-y-6 text-gray-300">
           {plan.features.map((feature, index) => (
             <li key={index} className="flex items-center gap-3">
-              <div className="text-white">
+              {/* <div className="text-white">
                 <IoCheckmarkCircle />
-              </div>
+              </div> */}
               <span>{feature.text}</span>
             </li>
           ))}
