@@ -1,8 +1,9 @@
 import React from 'react';
-import { colors, shadows } from '../../styles/theme';
+import { colors, shadows, fonts } from '../../styles/theme';
+import CustomButton from '../CustomButton';
 
 const Avatar = ({ className = '', src = '' }: { className?: string, src?: string }) => (
-    <div className={`absolute rounded-full overflow-hidden w-12 h-12 bg-zinc-700 border-2 border-[${colors.borderPrimary}] shadow-lg ${className}`}>
+    <div className={`absolute rounded-full overflow-hidden w-12 h-12 bg-zinc-700 border-2 shadow-lg ${className}`} style={{ borderColor: '#3B3B3B' }}>
         <img src={src} className="w-full h-full object-cover" alt="avatar" />
     </div>
 );
@@ -50,15 +51,20 @@ const GrowthChart = () => (
 );
 
 export const Card3: React.FC = () => (
-    <div className="w-full h-full flex items-center justify-center py-8" style={{ height: 'calc(100% + 50px)' }}>
-      <div className="w-full bg-[${colors.bgSecondary}] rounded-3xl p-8 md:p-12 flex items-center overflow-hidden border border-[${colors.borderPrimary}]" style={{ boxShadow: shadows.card, height: 'calc(90% + 80px)' }}>
-        <div className="w-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
+    <div className="w-full h-full flex items-center justify-center py-8" style={{ height: 'calc(100% + 40px)' }}>
+      <div className="w-full rounded-3xl p-8 md:p-12 flex overflow-hidden border" style={{ backgroundColor: '#181818', borderColor: '#3B3B3B', boxShadow: shadows.card, height: 'calc(90% + 80px)' }}>
+        <div className="w-full flex flex-col md:flex-row items-start gap-8 md:gap-12">
             <div className="w-full md:w-2/5 space-y-6 text-center md:text-left z-10">
-                <p className="text-sm font-bold tracking-[0.2em] text-gray-400 uppercase">GO PRO</p>
-                <h2 className="text-4xl md:text-5xl font-black leading-tight">Grow your creative community</h2>
-                <p className="text-gray-300 text-lg">
+                <p className="text-sm font-bold tracking-[0.2em] uppercase" style={{ color: colors.card.tagText, fontFamily: fonts.card }}>GO PRO</p>
+                <h2 className="text-4xl md:text-5xl font-black leading-tight" style={{ color: colors.card.headingText, fontFamily: fonts.card }}>Grow your creative community</h2>
+                <p className="text-lg" style={{ color: colors.card.bodyText, fontFamily: fonts.card }}>
                     Are you a creative professional, community organizer, or small business owner working within the creative industries? We understand the challenges of nurturing and growing a dedicated audience, so we built KyozoPro...
                 </p>
+                <div className="mt-4">
+                    <CustomButton variant="card-outline">
+                        Join the waitlist
+                    </CustomButton>
+                </div>
             </div>
             <div className="w-full md:w-3/5 h-[450px] relative">
                 <div className="absolute top-[10%] left-[5%] w-[50%]">

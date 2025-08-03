@@ -1,25 +1,26 @@
 import React from 'react';
-import { colors, shadows } from '../../styles/theme';
+import { colors, shadows, fonts } from '../../styles/theme';
+import CustomButton from '../CustomButton';
 
 const ImageContainer = ({ className = '', src = '' }: { className?: string, src?: string }) => (
-    <div className={`absolute rounded-2xl overflow-hidden shadow-2xl border border-[${colors.borderPrimary}] ${className}`}>
+    <div className={`absolute rounded-2xl overflow-hidden shadow-2xl border ${className}`} style={{ borderColor: colors.card.border }}>
         <img src={src} className="w-full h-full object-cover" alt="" />
     </div>
 );
 
 export const Card1: React.FC = () => (
-    <div className="w-full h-full flex items-center justify-center py-8" style={{ height: 'calc(100% + 50px)' }}>
-      <div className="w-full bg-[${colors.bgSecondary}] rounded-3xl p-8 md:p-12 flex items-center overflow-hidden border border-[${colors.borderPrimary}]" style={{ boxShadow: shadows.card, height: 'calc(90% + 80px)' }}>
-        <div className="w-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
+    <div className="w-full h-full flex items-center justify-center py-8" style={{ height: 'calc(100% + 40px)' }}>
+      <div className="w-full rounded-3xl p-8 md:p-12 flex overflow-hidden border" style={{ backgroundColor: colors.card.background, borderColor: colors.card.border, boxShadow: shadows.card, height: 'calc(90% + 80px)' }}>
+        <div className="w-full flex flex-col md:flex-row items-start gap-8 md:gap-12">
             <div className="w-full md:w-2/5 space-y-6 text-center md:text-left z-10">
-                <p className="text-sm font-bold tracking-[0.2em] text-gray-400 uppercase">INSIDER ACCESS</p>
-                <h2 className="text-4xl md:text-5xl font-black leading-tight">Exclusive access and insights</h2>
-                <p className="text-gray-300 text-lg">
-                    Experience the creative world through an insider's lens. Kyozo is an eco-system of creative communities - that gives you exclusive access to updates and insights from the creative luminaries driving cultural evolution.
-                </p>
-                <button className="border border-gray-500 rounded-full px-8 py-3 text-white font-bold hover:bg-white hover:text-black transition-colors">
-                    Join the waitlist
-                </button>
+                <p className="text-sm font-bold tracking-[0.2em] uppercase" style={{ color: colors.card.tagText, fontFamily: fonts.card }}>INSIDER ACCESS</p>
+                <h2 className="text-4xl md:text-5xl font-black leading-tight" style={{ color: colors.card.headingText, fontFamily: fonts.card }}>Exclusive access and insights</h2>
+                <p className="text-base md:text-lg" style={{ color: colors.card.bodyText, fontFamily: fonts.card }}>Get exclusive access to our community of creators, early product releases, and special events.</p>
+                <div className="mt-4">
+                    <CustomButton variant="card-outline">
+                        Join the waitlist
+                    </CustomButton>
+                </div>                  
             </div>
             <div className="w-full md:w-3/5 h-[450px] relative -mr-12">
                 <ImageContainer className="w-[28%] h-[20%] top-[2%] left-[25%]" src="https://images.pexels.com/photos/3757144/pexels-photo-3757144.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" />

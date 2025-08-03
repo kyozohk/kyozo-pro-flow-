@@ -11,7 +11,7 @@ export default function Home() {
       <Marquee />
       <Plans />
       <BubbleMarquee />
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

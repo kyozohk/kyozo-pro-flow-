@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@next/font':
+        specifier: ^14.2.15
+        version: 14.2.15(next@15.4.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -419,6 +422,11 @@ packages:
 
   '@next/env@15.4.5':
     resolution: {integrity: sha512-ruM+q2SCOVCepUiERoxOmZY9ZVoecR3gcXNwCYZRvQQWRjhOiPJGmQ2fAiLR6YKWXcSAh7G79KEFxN3rwhs4LQ==}
+
+  '@next/font@14.2.15':
+    resolution: {integrity: sha512-QopYhBmCDDrNDynbi+ZD1hDZXmQXVFo7TmAFp4DQgO/kogz1OLbQ92hPigJbj572eZ3GaaVxNIyYVn3/eAsehg==}
+    peerDependencies:
+      next: '*'
 
   '@next/swc-darwin-arm64@15.4.5':
     resolution: {integrity: sha512-84dAN4fkfdC7nX6udDLz9GzQlMUwEMKD7zsseXrl7FTeIItF8vpk1lhLEnsotiiDt+QFu3O1FVWnqwcRD2U3KA==}
@@ -1392,6 +1400,10 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.4
 
   '@next/env@15.4.5': {}
+
+  '@next/font@14.2.15(next@15.4.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))':
+    dependencies:
+      next: 15.4.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
 
   '@next/swc-darwin-arm64@15.4.5':
     optional: true

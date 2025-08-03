@@ -5,8 +5,21 @@ export const colors = {
   bgAccent: '#1C1C1C',
   
   // Border colors
-  borderPrimary: '#3B3B3B', // Card border color
+  borderPrimary: '#2A2A2A', // Darker card border color
   borderSecondary: 'rgba(255, 255, 255, 0.1)',
+  
+  // Card specific colors
+  card: {
+    border: '#2A2A2A',
+    background: '#181818',
+    tagText: '#A3A3A3',
+    headingText: '#FFFFFF',
+    bodyText: '#A3A3A3',
+    buttonBorder: '#3B3B3B',
+    buttonText: '#FFFFFF',
+    buttonHoverBg: '#FFFFFF',
+    buttonHoverText: '#121212',
+  },
   
   // Text colors
   textPrimary: '#FFFFFF',
@@ -17,6 +30,7 @@ export const colors = {
   primary: '#D45E9B', // Pink
   secondary: '#4A6CF7', // Blue
   tertiary: '#FFD166', // Yellow
+  accent: '#E0407B', // Footer pink
   
   // Utility colors
   dark: '#121212',
@@ -30,6 +44,8 @@ export const fonts = {
   // Font families
   primary: 'var(--font-inter), system-ui, sans-serif',
   secondary: 'var(--font-montserrat), Georgia, serif',
+  display: 'var(--font-montserrat), var(--font-inter), system-ui, sans-serif',
+  card: 'var(--font-montserrat), var(--font-inter), system-ui, sans-serif',
   
   // Font weights
   light: 300,
@@ -95,7 +111,7 @@ export const shadows = {
   lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
   xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
   '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-  card: '0 0 40px rgba(255, 255, 255, 0.05)',
+  card: '0 0 40px rgba(0, 0, 0, 0.5)',
   inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
   none: 'none',
 };
