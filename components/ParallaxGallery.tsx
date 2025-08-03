@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 
 // Using existing images from the public directory
 const IMAGES = [
-  { src: '/67ae7bbdd263bc64f5c19e76_e5bf2c7751af1be995b69d8edc1bfdd2_DJ.jpg', alt: 'DJ at a concert with hands up' },
-  { src: '/67ae7bbd83af268b96d231f0_8ae28ded999abed4243d61825f6e04a2_Singer.jpg', alt: 'Singer on stage with smoke' },
-  { src: '/67ae7bbd7496201be419bf91_e8e91a09d522e7b1c380f162fc99d763_Danser.jpg', alt: 'Breakdancer performing a handstand' },
-  { src: '/67ae7bbd0212f33e29ba1174_41f89d0aa76bc0e398f2dca1eb839b8d_Gallery.jpg', alt: 'Audience enjoying a concert' },
-  { src: '/67ae7bbd5ccb44e34d9390bc_7052dc5f38491742fe767025aa20ec27_Music.jpg', alt: 'Abstract red light streaks' },
+  { src: '/Parallax1.jpg', alt: 'DJ at a concert with hands up' },
+  { src: '/Parallax2.jpg', alt: 'Singer on stage with smoke' },
+  { src: '/Parallax3.jpg', alt: 'Breakdancer performing a handstand' },
+  { src: '/Parallax4.jpg', alt: 'Audience enjoying a concert' },
+  { src: '/Parallax5.jpg', alt: 'Abstract red light streaks' },
 ];
 
 // Target end-state transformations for each image (x in vw, y in vh, rotate in deg)
