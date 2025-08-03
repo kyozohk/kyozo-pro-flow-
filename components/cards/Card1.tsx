@@ -9,8 +9,8 @@ const ImageContainer = ({ className = '', src = '' }: { className?: string, src?
 );
 
 export const Card1: React.FC = () => (
-    <div className="w-full h-full flex items-center justify-center py-8" style={{ height: 'calc(100% + 40px)' }}>
-      <div className="w-full rounded-3xl p-8 md:p-12 flex overflow-hidden border" style={{ backgroundColor: colors.card.background, borderColor: colors.card.border, boxShadow: shadows.card, height: 'calc(90% + 80px)' }}>
+    <div className="w-full h-full flex items-center justify-center py-8" style={{ height: 'calc(100% + 140px)' }}>
+      <div className="w-full rounded-3xl p-8 md:p-12 flex overflow-hidden border" style={{ backgroundColor: colors.card.background, borderColor: colors.card.border, boxShadow: shadows.card, height: '80%' }}>
         <div className="w-full flex flex-col md:flex-row items-start gap-8 md:gap-12">
             <div className="w-full md:w-2/5 space-y-6 text-center md:text-left z-10">
                 <p className="text-sm font-bold tracking-[0.2em] uppercase" style={{ color: colors.card.tagText, fontFamily: fonts.card }}>INSIDER ACCESS</p>
