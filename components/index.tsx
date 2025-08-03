@@ -22,6 +22,8 @@ export { default as Toolkit } from './Toolkit';
 export { default as Hero } from './Hero';
 export { default as VideoWall } from './VideoWall';
 export { default as RevealText } from './RevealText';
+export { default as CreativeMinds } from './CreativeMinds';
+export { default as ConcentricCircles } from './ConcentricCircles';
 export { ParallaxCardsContainer } from './cards/ParallaxCardsContainer';
 
 // Custom components
