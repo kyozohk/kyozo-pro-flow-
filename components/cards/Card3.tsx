@@ -1,6 +1,7 @@
 import React from 'react';
 import { colors, shadows, fonts } from '../../styles/theme';
 import CustomButton from '../CustomButton';
+import Image from 'next/image';
 
 const Avatar = ({ className = '', src = '' }: { className?: string, src?: string }) => (
     <div className={`absolute rounded-full overflow-hidden w-12 h-12 bg-zinc-700 border-2 shadow-lg ${className}`} style={{ borderColor: colors.card.border }}>
@@ -69,17 +70,13 @@ export const Card3: React.FC = () => (
                 </div>
             </div>
             <div className="w-full md:w-3/5 h-[450px] relative">
-                <div className="absolute top-[10%] left-[5%] w-[50%]">
-                    <PerformancesChart />
-                </div>
-                <EmojiResponses />
-                <TotalMessages />
-                <GrowthChart />
-                <Avatar className="top-[35%] left-[55%]" src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" />
-                <Avatar className="top-[55%] right-[5%]" src="https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" />
-                <Avatar className="bottom-[10%] left-[10%]" src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" />
-                <div className="absolute w-10 h-10 rounded-full bottom-[25%] left-[35%] blur-lg" style={{ backgroundColor: `${colors.primary}80` }}></div>
-                <div className="absolute w-5 h-5 rounded-full top-[45%] right-[50%] blur-md" style={{ backgroundColor: `${colors.secondary}80` }}></div>
+            <Image 
+                              src="/grow.png" 
+                              alt="Kyozo app on smartphone"
+                              width={600}
+                              height={1200}
+                              className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+                           />
             </div>
         </div>
       </div>

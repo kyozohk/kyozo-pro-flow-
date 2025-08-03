@@ -15,13 +15,13 @@ const VIDEO_SOURCES = [
   '/dancer.mp4',
   '/lights.mp4',
   '/paint.mp4',
+  '/city.mp4',
+  '/concert.mp4',
   '/performance.mp4',
   '/pottery.mp4',
   '/prod.mp4',
   '/producing.mp4',
 ];
-
-const getRandomVideo = () => VIDEO_SOURCES[Math.floor(Math.random() * VIDEO_SOURCES.length)];
 
 // Scroll-up keyframes for animation
 const scrollUpKeyframes = `
@@ -86,7 +86,7 @@ const Row: React.FC<RowProps> = ({ layout, videos, rowIndex }) => {
       style={{
         marginTop: `${marginVertical}rem`,
         marginBottom: `${marginVertical}rem`,
-        height: '6.5rem'
+        height: '6.5rem',
       }}
     >
       <div key={key1} className="absolute" style={brickStyles[0]}>
@@ -106,13 +106,18 @@ interface RowData {
 }
 
 const VideoWall: React.FC = () => {
-  // Initialize rows
+  // pick 2 videos per row from VIDEO_SOURCES, loop around if index exceeds length
   const initialRows = useMemo<RowData[]>(() =>
-    Array.from({ length: ROW_COUNT }, (_, i) => ({
-      id: i,
-      layout: i % 2 === 0 ? 'A' : 'B',
-      videos: [getRandomVideo(), getRandomVideo()],
-    })), []);
+    Array.from({ length: ROW_COUNT }, (_, i) => {
+      const firstVideoIndex = (i * 2) % VIDEO_SOURCES.length;
+      const secondVideoIndex = (firstVideoIndex + 1) % VIDEO_SOURCES.length;
+
+      return {
+        id: i,
+        layout: i % 2 === 0 ? 'A' : 'B',
+        videos: [VIDEO_SOURCES[firstVideoIndex], VIDEO_SOURCES[secondVideoIndex]],
+      };
+    }), []);
 
   // Duplicate rows for seamless animation
   const doubledRows = [...initialRows, ...initialRows];
@@ -121,7 +126,7 @@ const VideoWall: React.FC = () => {
   const viewportHeight = `calc(6 * (7.2rem + ${bubbleGapRem * 2}rem))`;
 
   const animationStyle = {
-    animation: `scroll-up ${ANIMATION_DURATION_S}s linear infinite`
+    animation: `scroll-up ${ANIMATION_DURATION_S}s linear infinite`,
   };
 
   return (
@@ -142,11 +147,25 @@ const VideoWall: React.FC = () => {
           ))}
         </div>
       </div>
-      {/* Top fade-out gradient
-      <div className="absolute top-0 left-0 right-0 h-[40px] bg-gradient-to-b from-black to-transparent z-10 pointer-events-none" aria-hidden="true"></div>
-      
-      <div className="absolute bottom-0 left-0 right-0 h-[40px] bg-gradient-to-t from-black to-transparent z-10 pointer-events-none" aria-hidden="true"></div> */}
-    </div>    
+
+      {/* <div
+        className="absolute top-0 left-0 right-0 h-[40px] pointer-events-none"
+        style={{
+          background: 'linear-gradient(to bottom, black, transparent)',
+          zIndex: 10,
+        }}
+        aria-hidden="true"
+      />
+
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[40px] pointer-events-none"
+        style={{
+          background: 'linear-gradient(to top, black, transparent)',
+          zIndex: 10,
+        }}
+        aria-hidden="true"
+      /> */}
+    </div>
   );
 };
 
