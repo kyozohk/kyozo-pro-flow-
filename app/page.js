@@ -1,5 +1,5 @@
 'use client'
-import {ConnectExplore, Hero, SlidingCards, Footer, Toolkit, Bottom, Marquee, BubbleMarquee, Plans, MiddleText, RevealText} from "../components";
+import { ConnectExplore, Hero, Footer, Toolkit, Bottom, Marquee, BubbleMarquee, Plans, RevealText, ParallaxCardsContainer } from "../components";
 
 export default function Home() {
   return (
@@ -7,7 +7,8 @@ export default function Home() {
       <Hero />
       <ConnectExplore />  
       <RevealText text="Where creative minds converge" />
-      {/* <SlidingCards /> */}
+      <ParallaxCardsContainer />
+      
       <Toolkit />      
       <Marquee />
       <Plans />
