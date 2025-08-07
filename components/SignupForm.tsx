@@ -3,13 +3,14 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import TabButton from './TabButton';
+import CustomButton from './CustomButton';
 import CustomInput from './CustomInput';
 import CustomCheckbox from './CustomCheckbox';
-import Dialog from './Dialog';
-import CustomButton from './CustomButton';
-import ErrorNotification from './ErrorNotification';
-import { AuthTab, FormMode } from '../types';
 import { useAuth } from '../contexts/AuthContext';
+import Dialog from './Dialog';
+import ErrorNotification from './ErrorNotification';
+import PhoneInput from './PhoneInput';
+import { AuthTab, FormMode } from '../types';
 
 const SuccessView: React.FC<{ message: string }> = ({ message }) => (
     <div className="text-center space-y-4 py-8">
@@ -27,18 +28,19 @@ interface WaitlistFormProps {
 
 const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
   const router = useRouter();
-  const { signUpWithEmail, signInWithEmail, signInWithGoogle } = useAuth();
+  const { signUpWithEmail, signUpWithPhone, signInWithEmail, signInWithGoogle } = useAuth();
   const [authTab, setAuthTab] = useState<AuthTab>(AuthTab.Email);
   const [formMode, setFormMode] = useState<FormMode>(FormMode.SignUp);
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
-    phone: '',
     email: '',
+    phone: '',
     password: '',
-    newsletter: true,
-    whatsapp: true,
+    newsletter: false,
+    whatsapp: false
   });
+  const [countryCode, setCountryCode] = useState('US');
   const [errors, setErrors] = useState<Partial<Record<keyof Omit<typeof formData, 'newsletter' | 'whatsapp'>, string>>>({});
   const [authError, setAuthError] = useState<string>('');
   const [isSuccess, setIsSuccess] = useState(false);
@@ -98,25 +100,89 @@ const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
     
     try {
       if (formMode === FormMode.SignUp && authTab === AuthTab.Email) {
-        await signUpWithEmail(formData.email, formData.password);
+        await signUpWithEmail(formData.email, formData.password, formData.firstname, formData.lastname);
         setIsSuccess(true);
-        setTimeout(() => router.push('/dashboard'), 2000);
+        setTimeout(() => router.push('/auth/email-verification'), 2000);
+      } else if (formMode === FormMode.SignUp && authTab === AuthTab.Phone) {
+        // Phone signup with country code and user data
+        const confirmationResult = await signUpWithPhone(formData.phone, countryCode, formData.firstname, formData.lastname);
+        // Store confirmation result for OTP verification
+        sessionStorage.setItem('phoneConfirmationResult', JSON.stringify({
+          verificationId: confirmationResult.verificationId
+        }));
+        setIsSuccess(true);
+        setTimeout(() => router.push('/auth/phone-verification'), 2000);
       } else if (formMode === FormMode.SignIn && authTab === AuthTab.Email) {
-        await signInWithEmail(formData.email, formData.password);
-        router.push('/dashboard');
+        const userCredential = await signInWithEmail(formData.email, formData.password);
+        // Check if email is verified and profile is complete
+        if (!userCredential.user.emailVerified) {
+          router.push('/auth/email-verification');
+        } else {
+          // Check if profile is complete by checking displayName
+          if (!userCredential.user.displayName) {
+            router.push('/auth/profile-completion');
+          } else {
+            router.push('/dashboard');
+          }
+        }
+      } else if (formMode === FormMode.SignIn && authTab === AuthTab.Phone) {
+        // Phone signin
+        const confirmationResult = await signUpWithPhone(formData.phone, countryCode);
+        sessionStorage.setItem('phoneConfirmationResult', JSON.stringify({
+          verificationId: confirmationResult.verificationId
+        }));
+        setIsSuccess(true);
+        setTimeout(() => router.push('/auth/phone-verification'), 2000);
       } else if (formMode === FormMode.ForgotPassword) {
         // Handle password reset
         console.log("Password reset for:", authTab === AuthTab.Email ? formData.email : formData.phone);
         setIsSuccess(true);
         setTimeout(() => setFormMode(FormMode.SignIn), 2000);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Authentication error:", error);
-      if (error instanceof Error) {
-        setAuthError(`Authentication failed: ${error.message}`);
-      } else {
-        setAuthError('Authentication failed. Please check your credentials.');
+      
+      // Handle specific Firebase error codes
+      let errorMessage = 'Authentication failed. Please try again.';
+      
+      if (error?.code) {
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            if (formMode === FormMode.SignUp) {
+              errorMessage = 'This email is already registered. Try signing in instead, or use the "Forgot Password" option if you need to reset your password.';
+            } else {
+              errorMessage = error.message;
+            }
+            break;
+          case 'auth/weak-password':
+            errorMessage = 'Password is too weak. Please choose a stronger password with at least 6 characters.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Please enter a valid email address.';
+            break;
+          case 'auth/user-not-found':
+            errorMessage = 'No account found with this email. Please sign up first.';
+            break;
+          case 'auth/wrong-password':
+            errorMessage = 'Incorrect password. Please try again or use "Forgot Password".';
+            break;
+          case 'auth/invalid-credential':
+            errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = 'Too many failed attempts. Please wait a moment before trying again.';
+            break;
+          case 'auth/network-request-failed':
+            errorMessage = 'Network error. Please check your internet connection and try again.';
+            break;
+          default:
+            errorMessage = error.message || 'Authentication failed. Please try again.';
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
       }
+      
+      setAuthError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -125,8 +191,14 @@ const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
-      await signInWithGoogle();
-      router.push('/dashboard');
+      const result = await signInWithGoogle();
+      // Google users typically have verified emails and complete profiles
+      // Check if profile needs completion
+      if (!result.user.displayName) {
+        router.push('/auth/profile-completion');
+      } else {
+        router.push('/dashboard');
+      }
     } catch (error: any) {
       console.error("Google sign-in error:", error);
       
@@ -180,7 +252,24 @@ const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
         {authTab === AuthTab.Email ? (
           <CustomInput label="Email *" name="email" type="email" value={formData.email} onChange={handleInputChange} error={errors.email}/>
         ) : (
-          <CustomInput label="Phone *" name="phone" type="tel" value={formData.phone} onChange={handleInputChange} error={errors.phone}/>
+          <div>
+            <label className="block text-gray-300 text-sm font-bold mb-2">
+              Phone Number *
+            </label>
+            <PhoneInput
+              value={formData.phone}
+              onChange={(phone, country) => {
+                setFormData(prev => ({ ...prev, phone }));
+                setCountryCode(country);
+              }}
+              placeholder="Enter your phone number"
+              required
+              className="w-full"
+            />
+            {errors.phone && (
+              <p className="text-red-400 text-sm mt-1">{errors.phone}</p>
+            )}
+          </div>
         )}
         
         {formMode !== FormMode.ForgotPassword && (

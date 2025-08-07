@@ -24,12 +24,12 @@ interface AuthContextType {
   currentUser: User | null;
   user: User | null; // Alias for currentUser for easier access
   loading: boolean;
-  signUpWithEmail: (email: string, password: string) => Promise<any>;
-  signUpWithPhone: (phoneNumber: string) => Promise<any>;
+  signUpWithEmail: (email: string, password: string, firstName?: string, lastName?: string) => Promise<any>;
+  signUpWithPhone: (phoneNumber: string, countryCode?: string, firstName?: string, lastName?: string) => Promise<any>;
   verifyPhoneCode: (verificationId: string, code: string) => Promise<any>;
   signInWithEmail: (email: string, password: string) => Promise<any>;
   signInWithGoogle: () => Promise<any>;
-  completeProfile: (firstName: string, lastName: string, avatarFile?: File) => Promise<void>;
+  completeProfile: (firstName: string, lastName: string, phoneNumber?: string, avatarFile?: File, countryCode?: string) => Promise<void>;
   logout: () => Promise<void>;
   signOut: () => Promise<void>; // Alias for logout for easier access
 }
@@ -62,10 +62,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   // Sign up with email
-  const signUpWithEmail = async (email: string, password: string) => {
+  const signUpWithEmail = async (email: string, password: string, firstName?: string, lastName?: string) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await sendEmailVerification(userCredential.user);
+      
+      // Save user profile data to Firestore if names are provided
+      if (firstName || lastName) {
+        await setDoc(doc(db, 'users', userCredential.user.uid), {
+          firstName: firstName || '',
+          lastName: lastName || '',
+          email: email,
+          emailVerified: false,
+          profileComplete: false,
+          createdAt: new Date(),
+        });
+      }
+      
       return userCredential;
     } catch (error) {
       console.error("Error signing up with email:", error);
@@ -74,13 +87,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   // Sign up with phone
-  const signUpWithPhone = async (phoneNumber: string) => {
+  const signUpWithPhone = async (phoneNumber: string, countryCode?: string, firstName?: string, lastName?: string) => {
     try {
       const recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
         size: 'invisible',
       });
       
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+      
+      // Store user data for later use after phone verification
+      if (firstName || lastName || countryCode) {
+        sessionStorage.setItem('pendingPhoneUserData', JSON.stringify({
+          firstName: firstName || '',
+          lastName: lastName || '',
+          countryCode: countryCode || 'US',
+          phoneNumber
+        }));
+      }
+      
       return confirmationResult;
     } catch (error) {
       console.error("Error signing up with phone:", error);
@@ -92,7 +116,44 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const verifyPhoneCode = async (verificationId: string, code: string) => {
     try {
       const credential = PhoneAuthProvider.credential(verificationId, code);
-      return await signInWithCredential(auth, credential);
+      const userCredential = await signInWithCredential(auth, credential);
+      
+      // Check if there's pending user data from phone signup
+      const pendingDataStr = sessionStorage.getItem('pendingPhoneUserData');
+      if (pendingDataStr) {
+        try {
+          const pendingData = JSON.parse(pendingDataStr);
+          
+          // Save user data to Firestore
+          await setDoc(doc(db, 'users', userCredential.user.uid), {
+            firstName: pendingData.firstName,
+            lastName: pendingData.lastName,
+            email: userCredential.user.email || '',
+            phoneNumber: pendingData.phoneNumber,
+            countryCode: pendingData.countryCode,
+            photoURL: userCredential.user.photoURL || '',
+            emailVerified: userCredential.user.emailVerified,
+            profileComplete: false, // Will be completed in profile completion step
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+          
+          // Update Firebase Auth profile if names are provided
+          if (pendingData.firstName || pendingData.lastName) {
+            await updateProfile(userCredential.user, {
+              displayName: `${pendingData.firstName} ${pendingData.lastName}`.trim()
+            });
+          }
+          
+          // Clear pending data
+          sessionStorage.removeItem('pendingPhoneUserData');
+        } catch (error) {
+          console.error('Error saving user data after phone verification:', error);
+          // Don't throw here as the main auth succeeded
+        }
+      }
+      
+      return userCredential;
     } catch (error) {
       console.error("Error verifying phone code:", error);
       throw error;
@@ -140,7 +201,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   // Complete user profile
-  const completeProfile = async (firstName: string, lastName: string, avatarFile?: File) => {
+  const completeProfile = async (firstName: string, lastName: string, phoneNumber?: string, avatarFile?: File, countryCode?: string) => {
     if (!currentUser) throw new Error("No authenticated user");
     
     try {
@@ -164,9 +225,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
         firstName,
         lastName,
         email: currentUser.email,
-        phoneNumber: currentUser.phoneNumber,
+        phoneNumber: phoneNumber || currentUser.phoneNumber,
+        countryCode: countryCode || 'US',
         photoURL,
-        createdAt: new Date(),
+        emailVerified: currentUser.emailVerified,
+        profileComplete: true,
+        updatedAt: new Date(),
       }, { merge: true });
       
     } catch (error) {

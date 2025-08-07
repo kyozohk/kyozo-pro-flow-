@@ -1,17 +1,41 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '../../contexts/AuthContext';
 import CustomButton from '../CustomButton';
 import KyozoLogo from '../ui/KyozoLogo';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
 
 const Sidebar: React.FC = () => {
-  const { signOut } = useAuth();
+  const { signOut, currentUser } = useAuth();
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch user profile data
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!currentUser) return;
+      
+      try {
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        if (userDoc.exists()) {
+          setUserProfile(userDoc.data());
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, [currentUser]);
 
   return (
-    <aside className="w-64 bg-zinc-900 h-full flex flex-col border-r border-zinc-800">
+    <aside className="w-64 bg-[#1C1C1E] h-full flex flex-col border-r border-gray-800">
       {/* Logo at the top */}
       <div className="p-6">
         <Link href="/">
@@ -73,15 +97,46 @@ const Sidebar: React.FC = () => {
         </ul>
       </nav>
       
-      {/* Bottom section with sign out and links */}
-      <div className="border-t border-zinc-800 p-4">
+      {/* User profile section */}
+      <div className="border-t border-gray-800 p-4">
+        {!loading && userProfile && (
+          <div className="mb-4">
+            {/* User Avatar and Info */}
+            <div className="flex items-center mb-3">
+              <div className="relative">
+                {userProfile.photoURL ? (
+                  <img 
+                    src={userProfile.photoURL} 
+                    alt="Profile" 
+                    className="w-10 h-10 rounded-full object-cover border-2 border-[#E0407B]"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#E0407B] to-[#D45E9B] flex items-center justify-center text-white font-bold text-sm">
+                    {userProfile.firstName?.charAt(0)}{userProfile.lastName?.charAt(0)}
+                  </div>
+                )}
+                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-[#1C1C1E]"></div>
+              </div>
+              <div className="ml-3 flex-1 min-w-0">
+                <p className="text-sm font-medium text-white truncate">
+                  {userProfile.firstName} {userProfile.lastName}
+                </p>
+                <p className="text-xs text-gray-400 truncate">
+                  {currentUser?.email || userProfile.phoneNumber}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Sign Out Button */}
         <CustomButton 
           onClick={signOut}
-          variant="primary"
-          className="w-full flex items-center justify-center mb-4 py-3 rounded-full"
+          variant="outline"
+          className="w-full flex items-center justify-center mb-4 py-2 rounded-lg border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-[#E0407B] hover:text-[#E0407B] transition-all duration-200"
         >
           <div className="flex items-center">
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             Sign Out
@@ -91,22 +146,22 @@ const Sidebar: React.FC = () => {
         <div className="space-y-2">
           <Link href="/terms" passHref legacyBehavior>
             <a className="block w-full">
-              <CustomButton 
-                variant="text" 
-                className="w-full text-center text-sm text-gray-500"
-              >
-                Terms & Conditions
-              </CustomButton>
+                <CustomButton 
+                  variant="text" 
+                  className="w-full text-center text-xs text-gray-500 hover:text-gray-400"
+                >
+                  Terms & Conditions
+                </CustomButton>
             </a>
           </Link>
           <Link href="/privacy" passHref legacyBehavior>
             <a className="block w-full">
-              <CustomButton 
-                variant="text" 
-                className="w-full text-center text-sm text-gray-500"
-              >
-                Privacy Policy
-              </CustomButton>
+                <CustomButton 
+                  variant="text" 
+                  className="w-full text-center text-xs text-gray-500 hover:text-gray-400"
+                >
+                  Privacy Policy
+                </CustomButton>
             </a>
           </Link>
         </div>

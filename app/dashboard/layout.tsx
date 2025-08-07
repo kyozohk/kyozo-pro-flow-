@@ -27,6 +27,18 @@ export default function DashboardLayout({
     return null;
   }
   
-  // Render dashboard if authenticated
+  // Check if email is verified
+  if (!user.emailVerified) {
+    router.push('/auth/email-verification');
+    return null;
+  }
+  
+  // Check if profile is complete (using displayName as indicator)
+  if (!user.displayName) {
+    router.push('/auth/profile-completion');
+    return null;
+  }
+  
+  // Render dashboard if authenticated, verified, and profile complete
   return <>{children}</>;
 }

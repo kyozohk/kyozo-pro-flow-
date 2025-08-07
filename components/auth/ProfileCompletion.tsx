@@ -1,19 +1,79 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '../../contexts/AuthContext';
 import { CustomButton } from '../index';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+import Dialog from '../Dialog';
+import PhoneInput from '../PhoneInput';
 
 export const ProfileCompletion: React.FC = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [countryCode, setCountryCode] = useState('US');
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState('');
+  const [signupMethod, setSignupMethod] = useState<'email' | 'phone' | 'google'>('email');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
   
-  const { completeProfile } = useAuth();
+  const { completeProfile, currentUser } = useAuth();
+
+  // Generate a default avatar URL based on user's initials
+  const generateDefaultAvatar = (firstName: string, lastName: string) => {
+    const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+    const colors = [
+      'FF6B6B', 'FFE66D', '4ECDC4', '45B7D1', 'A8E6CF', 
+      'FFD93D', 'FF8B94', '88D8B0', '6C5CE7', 'FD79A8'
+    ];
+    const colorIndex = (firstName.charCodeAt(0) + lastName.charCodeAt(0)) % colors.length;
+    const bgColor = colors[colorIndex];
+    
+    return `https://ui-avatars.com/api/?name=${initials}&background=${bgColor}&color=fff&size=200&font-size=0.6&bold=true`;
+  };
+
+  // Fetch existing user data and pre-fill form
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!currentUser) return;
+      
+      try {
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setFirstName(userData.firstName || '');
+          setLastName(userData.lastName || '');
+          setPhoneNumber(userData.phoneNumber || currentUser.phoneNumber || '');
+          
+          // Determine signup method
+          if (currentUser.phoneNumber && !currentUser.email) {
+            setSignupMethod('phone');
+          } else if (currentUser.providerData.some(provider => provider.providerId === 'google.com')) {
+            setSignupMethod('google');
+          } else {
+            setSignupMethod('email');
+          }
+          
+          // Set existing avatar if available
+          if (userData.photoURL) {
+            setAvatarPreview(userData.photoURL);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [currentUser]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -58,9 +118,27 @@ export const ProfileCompletion: React.FC = () => {
     setError('');
 
     try {
-      await completeProfile(firstName, lastName, avatarFile || undefined);
-      // Redirect to dashboard or home page after profile completion
-      window.location.href = '/';
+      // If no avatar file is provided and no existing avatar, generate a default one
+      let avatarToUse = avatarFile;
+      
+      if (!avatarFile && !avatarPreview && firstName && lastName) {
+        // Create a default avatar URL
+        const defaultAvatarUrl = generateDefaultAvatar(firstName, lastName);
+        
+        // Convert the default avatar URL to a blob and then to a file
+        try {
+          const response = await fetch(defaultAvatarUrl);
+          const blob = await response.blob();
+          avatarToUse = new File([blob], 'default-avatar.png', { type: 'image/png' });
+        } catch (avatarError) {
+          console.warn('Failed to generate default avatar:', avatarError);
+          // Continue without avatar if generation fails
+        }
+      }
+      
+      await completeProfile(firstName, lastName, phoneNumber, avatarToUse || undefined, countryCode);
+      // Redirect to dashboard after profile completion
+      window.location.href = '/dashboard';
     } catch (error: any) {
       setError(error.message || 'Failed to complete profile');
     } finally {
@@ -68,20 +146,41 @@ export const ProfileCompletion: React.FC = () => {
     }
   };
 
-  return (
-    <div className="w-full max-w-md mx-auto p-6 bg-white rounded-xl shadow-lg">
-      <h2 className="text-2xl font-bold text-center mb-6">Complete Your Profile</h2>
-      
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
-          {error}
+  // Show loading spinner while fetching initial data
+  if (initialLoading) {
+    return (
+      <Dialog title="Complete Your Profile" onClose={() => router.push('/')}>
+        <div className="flex flex-col items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#E0407B] mb-4"></div>
+          <p className="text-gray-300">Loading your profile...</p>
         </div>
-      )}
+      </Dialog>
+    );
+  }
+
+  // Get dialog title based on signup method
+  const getDialogTitle = () => {
+    switch (signupMethod) {
+      case 'phone': return 'Complete Your Profile';
+      case 'google': return 'Add Your Phone Number';
+      default: return 'Complete Your Profile';
+    }
+  };
+
+  return (
+    <Dialog title={getDialogTitle()} onClose={() => router.push('/')}>
+      <div className="space-y-6">
+        
+        {error && (
+          <div className="mb-4 p-3 bg-red-900/30 border border-red-500/50 text-red-400 rounded-lg">
+            {error}
+          </div>
+        )}
 
       <form onSubmit={handleSubmit}>
         <div className="mb-6 flex flex-col items-center">
           <div 
-            className="w-32 h-32 rounded-full bg-gray-200 mb-4 flex items-center justify-center overflow-hidden cursor-pointer"
+            className="w-32 h-32 rounded-full bg-gray-800 border-2 border-gray-600 mb-4 flex items-center justify-center overflow-hidden cursor-pointer hover:border-[#E0407B] transition-colors"
             onClick={handleBrowseClick}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
@@ -93,7 +192,7 @@ export const ProfileCompletion: React.FC = () => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="text-gray-500 text-center p-4">
+              <div className="text-gray-400 text-center p-4">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
@@ -108,43 +207,69 @@ export const ProfileCompletion: React.FC = () => {
             accept="image/*"
             className="hidden"
           />
-          <p className="text-sm text-gray-500">Upload a profile picture</p>
+          <p className="text-sm text-gray-400">Upload a profile picture</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
-              First Name
+        {/* Name fields - show for email and phone signup, hide for Google if already have names */}
+        {(signupMethod !== 'google' || !firstName || !lastName) && (
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div>
+              <label className="block text-gray-300 text-sm font-bold mb-2" htmlFor="firstName">
+                First Name
+              </label>
+              <input
+                id="firstName"
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E0407B] focus:border-[#E0407B]"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-300 text-sm font-bold mb-2" htmlFor="lastName">
+                Last Name
+              </label>
+              <input
+                id="lastName"
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E0407B] focus:border-[#E0407B]"
+                required
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Phone number field - required for all signup methods except phone (already have it) */}
+        {signupMethod !== 'phone' && (
+          <div className="mb-6">
+            <label className="block text-gray-300 text-sm font-bold mb-2" htmlFor="phoneNumber">
+              Phone Number
             </label>
-            <input
-              id="firstName"
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E0407B]"
+            <PhoneInput
+              id="phoneNumber"
+              value={phoneNumber}
+              onChange={(phone, country) => {
+                setPhoneNumber(phone);
+                setCountryCode(country);
+              }}
+              placeholder="Enter your phone number"
               required
+              className="w-full"
             />
           </div>
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lastName">
-              Last Name
-            </label>
-            <input
-              id="lastName"
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E0407B]"
-              required
-            />
-          </div>
-        </div>
+        )}
 
         <CustomButton variant="form" type="submit" disabled={loading}>
-          {loading ? 'Saving...' : 'Complete Profile'}
+          {loading ? 'Saving...' : (
+            signupMethod === 'google' ? 'Save Phone Number' : 'Complete Profile'
+          )}
         </CustomButton>
       </form>
-    </div>
+      </div>
+    </Dialog>
   );
 };
 
