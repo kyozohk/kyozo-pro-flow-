@@ -3,6 +3,7 @@ import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -16,6 +17,19 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+
+// Initialize App Check for phone authentication (temporarily disabled for testing)
+// if (typeof window !== 'undefined' && !getApps().length) {
+//   try {
+//     initializeAppCheck(app, {
+//       provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY || ''),
+//       isTokenAutoRefreshEnabled: true
+//     });
+//   } catch (error) {
+//     console.warn('App Check initialization failed:', error);
+//   }
+// }
+
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);

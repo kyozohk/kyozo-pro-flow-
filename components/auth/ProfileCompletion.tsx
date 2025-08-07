@@ -9,7 +9,11 @@ import { db } from '../../lib/firebase';
 import Dialog from '../Dialog';
 import PhoneInput from '../PhoneInput';
 
-export const ProfileCompletion: React.FC = () => {
+interface ProfileCompletionProps {
+  onProfileComplete?: () => void;
+}
+
+export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onProfileComplete }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -137,8 +141,12 @@ export const ProfileCompletion: React.FC = () => {
       }
       
       await completeProfile(firstName, lastName, phoneNumber, avatarToUse || undefined, countryCode);
-      // Redirect to dashboard after profile completion
-      window.location.href = '/dashboard';
+      // Call completion callback or redirect to dashboard
+      if (onProfileComplete) {
+        onProfileComplete();
+      } else {
+        window.location.href = '/dashboard';
+      }
     } catch (error: any) {
       setError(error.message || 'Failed to complete profile');
     } finally {
@@ -168,7 +176,7 @@ export const ProfileCompletion: React.FC = () => {
   };
 
   return (
-    <Dialog title={getDialogTitle()} onClose={() => router.push('/')}>
+    <Dialog title={getDialogTitle()} onClose={() => {}} dismissible={false}>
       <div className="space-y-6">
         
         {error && (

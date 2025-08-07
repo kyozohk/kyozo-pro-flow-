@@ -284,16 +284,17 @@ const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
         )}
 
         <CustomButton type="submit" variant="form" disabled={isLoading}>
-          {isLoading ? 'Processing...' : formMode === FormMode.SignUp ? 'Sign Up' : formMode === FormMode.SignIn ? 'Sign In' : 'Reset Password'}
+          {isLoading ? 'Processing...' : (formMode === FormMode.SignUp ? 'Sign Up' : formMode === FormMode.SignIn ? 'Sign In' : 'Reset Password')}
         </CustomButton>
-        
-        {authTab === AuthTab.Email && formMode !== FormMode.ForgotPassword && (
-          <div className="mt-4">
-            <button 
-              type="button" 
-              className="w-full py-3 px-4 flex items-center justify-center gap-2 bg-white text-gray-800 rounded-full hover:bg-gray-100 transition-colors"
-              onClick={handleGoogleSignIn}
-              disabled={isLoading}
+      </form>
+      
+      {authTab === AuthTab.Email && formMode !== FormMode.ForgotPassword && (
+        <div className="mt-4">
+          <button 
+            type="button" 
+            className="w-full py-3 px-4 flex items-center justify-center gap-2 bg-white text-gray-800 rounded-full hover:bg-gray-100 transition-colors"
+            onClick={handleGoogleSignIn}
+            disabled={isLoading}
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -354,7 +355,9 @@ const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
             </CustomButton>
           </div>
         )}
-      </form>
+      
+      {/* reCAPTCHA container for phone authentication */}
+      <div id="recaptcha-container"></div>
     </Dialog>
   );
 };

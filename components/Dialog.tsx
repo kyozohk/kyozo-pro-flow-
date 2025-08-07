@@ -4,9 +4,10 @@ interface DialogProps {
   title: string;
   onClose: () => void;
   children: React.ReactNode;
+  dismissible?: boolean; // Whether dialog can be dismissed by clicking backdrop
 }
 
-const Dialog: React.FC<DialogProps> = ({ title, onClose, children }) => {
+const Dialog: React.FC<DialogProps> = ({ title, onClose, children, dismissible = true }) => {
   const [isClosing, setIsClosing] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -34,13 +35,13 @@ const Dialog: React.FC<DialogProps> = ({ title, onClose, children }) => {
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-300 ease-in-out ${isOpen ? 'opacity-100' : 'opacity-0'}`}
-      onClick={handleClose}
+      onClick={dismissible ? handleClose : undefined}
       role="dialog"
       aria-modal="true"
       aria-labelledby="dialog-title"
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-md"></div>
       
       {/* Animated Dialog Container */}
       <div

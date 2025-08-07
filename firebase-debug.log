@@ -1,0 +1,21 @@
+[debug] [2025-08-07T23:11:18.425Z] ----------------------------------------------------------------------
+[debug] [2025-08-07T23:11:18.431Z] Command:       /opt/homebrew/Cellar/node/24.3.0/bin/node /opt/homebrew/bin/firebase init
+[debug] [2025-08-07T23:11:18.431Z] CLI Version:   14.8.0
+[debug] [2025-08-07T23:11:18.431Z] Platform:      darwin
+[debug] [2025-08-07T23:11:18.431Z] Node Version:  v24.3.0
+[debug] [2025-08-07T23:11:18.432Z] Time:          Fri Aug 08 2025 07:11:18 GMT+0800 (Hong Kong Standard Time)
+[debug] [2025-08-07T23:11:18.432Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-08-07T23:11:18.435Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-07T23:11:18.435Z] > authorizing via signed-in user (kyozodevelopment@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/kyozo/Development/v2/kyozo-pro-flow-
+

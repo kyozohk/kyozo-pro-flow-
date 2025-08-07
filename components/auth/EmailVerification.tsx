@@ -7,7 +7,11 @@ import { sendEmailVerification, reload } from 'firebase/auth';
 import { CustomButton } from '../index';
 import Dialog from '../Dialog';
 
-export const EmailVerification: React.FC = () => {
+interface EmailVerificationProps {
+  onVerificationComplete?: () => void;
+}
+
+export const EmailVerification: React.FC<EmailVerificationProps> = ({ onVerificationComplete }) => {
   const [isVerified, setIsVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -24,12 +28,16 @@ export const EmailVerification: React.FC = () => {
     // Check if email is already verified
     if (currentUser.emailVerified) {
       setIsVerified(true);
-      // Redirect to profile completion after a short delay
-      setTimeout(() => {
-        router.push('/auth/profile-completion');
-      }, 2000);
+      // Call completion callback or redirect to profile completion
+      if (onVerificationComplete) {
+        onVerificationComplete();
+      } else {
+        setTimeout(() => {
+          router.push('/auth/profile-completion');
+        }, 2000);
+      }
     }
-  }, [currentUser, router]);
+  }, [currentUser, router, onVerificationComplete]);
 
   useEffect(() => {
     if (resendCooldown > 0) {

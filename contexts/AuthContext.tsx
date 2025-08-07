@@ -89,11 +89,38 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Sign up with phone
   const signUpWithPhone = async (phoneNumber: string, countryCode?: string, firstName?: string, lastName?: string) => {
     try {
+      // Validate phone number format
+      if (!phoneNumber || phoneNumber.trim() === '') {
+        throw new Error('Phone number is required');
+      }
+      
+      // Ensure phone number starts with + for international format
+      const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+${phoneNumber}`;
+      
+      // Clear any existing reCAPTCHA verifier
+      const existingContainer = document.getElementById('recaptcha-container');
+      if (existingContainer) {
+        existingContainer.innerHTML = '';
+      }
+      
       const recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
         size: 'invisible',
+        callback: (response: any) => {
+          console.log('reCAPTCHA solved:', response);
+        },
+        'expired-callback': () => {
+          console.log('reCAPTCHA expired');
+        }
       });
       
-      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+      console.log('Attempting phone auth with:', formattedPhone);
+      console.log('Firebase config check:', {
+        apiKey: !!auth.app.options.apiKey,
+        authDomain: auth.app.options.authDomain,
+        projectId: auth.app.options.projectId
+      });
+      
+      const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, recaptchaVerifier);
       
       // Store user data for later use after phone verification
       if (firstName || lastName || countryCode) {
@@ -101,13 +128,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
           firstName: firstName || '',
           lastName: lastName || '',
           countryCode: countryCode || 'US',
-          phoneNumber
+          phoneNumber: formattedPhone
         }));
       }
       
       return confirmationResult;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error signing up with phone:", error);
+      
+      // Provide more specific error messages
+      if (error?.code === 'auth/invalid-phone-number') {
+        throw new Error('Please enter a valid phone number with country code.');
+      } else if (error?.code === 'auth/too-many-requests') {
+        throw new Error('Too many requests. Please try again later.');
+      } else if (error?.code === 'auth/argument-error') {
+        throw new Error('Invalid phone number format. Please include the country code.');
+      } else if (error?.code === 'auth/invalid-app-credential') {
+        throw new Error('Phone authentication is not properly configured. Please contact support.');
+      } else if (error?.code === 'auth/app-check-token-invalid') {
+        throw new Error('Security verification failed. Please try again.');
+      }
+      
       throw error;
     }
   };

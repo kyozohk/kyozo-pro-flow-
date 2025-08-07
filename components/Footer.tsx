@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import KyozoLogo from './ui/KyozoLogo';
 import KyozoIcon from './ui/KyozoIcon';
 import AuthDialog from './auth/AuthDialog';
-import SignUpForm from './SignupForm';
+import UnifiedAuthDialog from './auth/UnifiedAuthDialog';
 import CustomButton from './CustomButton';
 
 
@@ -37,8 +37,8 @@ const Footer: React.FC = () => {
       </footer>
 
       {isAuthDialogOpen && (
-        <SignUpForm 
-          onSubmitted={handleCloseAuthDialog} 
+        <UnifiedAuthDialog 
+          onClose={handleCloseAuthDialog} 
         />
       )}
     </>
