@@ -384,113 +384,203 @@ const EventbriteOnboardingDialog: React.FC<EventbriteOnboardingDialogProps> = ({
 
   const renderPreviewStep = () => (
     <div className="w-full h-full flex flex-col lg:flex-row items-stretch gap-8 lg:gap-12 p-6 lg:p-8">
-      {/* Left Side - Unique Attendees Preview */}
-      <div className="w-full lg:w-1/2 space-y-6 text-center lg:text-left z-10">
+      {/* Left Side - Import Summary & Progress */}
+      <div className="w-full lg:w-1/3 flex flex-col space-y-6 text-center lg:text-left z-10">
         <p
           className="text-sm font-bold tracking-[0.2em] uppercase"
           style={{ color: colors.card.tagText, fontFamily: fonts.card }}
         >
-          PREVIEW IMPORT
+          PREVIEW & EDIT
         </p>
         <h2
-          className="text-3xl lg:text-5xl font-bold leading-tight tracking-tighter"
+          className="text-3xl lg:text-4xl font-bold leading-tight tracking-tighter"
           style={{ color: colors.card.headingText, fontFamily: fonts.card, letterSpacing: '-0.03em' }}
         >
-          Review Attendees
+          Edit Attendees
         </h2>
         <p 
           className="text-base lg:text-lg leading-relaxed"
           style={{ color: colors.card.bodyText, fontFamily: fonts.card }}
         >
-          Review all unique attendees from your <strong>{organizationName}</strong> events before importing them as community members.
+          Review and edit attendee information before importing them as community members.
         </p>
 
         <div className="bg-gray-800/30 border border-gray-600/50 rounded-lg p-4">
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-lg font-semibold text-white">Import Summary</h3>
-            <span className="text-sm text-gray-400">{uniqueAttendees.length} unique users</span>
+            <span className="text-sm text-gray-400">{editableAttendees.length} attendees</span>
           </div>
           <div className="text-sm text-gray-300 space-y-1">
             <p>Organization: {organizationName}</p>
             <p>Events Processed: {totalEvents}</p>
-            <p>Unique Attendees: {uniqueAttendees.length}</p>
+            <p>Ready to Import: {editableAttendees.length}</p>
           </div>
         </div>
 
-        <div className="max-h-64 overflow-y-auto space-y-2">
-          <h4 className="text-sm font-semibold text-gray-300 mb-2">Unique Attendees:</h4>
-          {uniqueAttendees.map((attendee: EventbriteAttendee, index: number) => (
-            <div key={attendee.email} className="p-3 bg-gray-800/50 border border-gray-600/30 rounded-lg">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-white font-medium">{attendee.name}</p>
-                  <p className="text-sm text-gray-400">{attendee.email}</p>
-                  <p className="text-xs text-gray-500">
-                    {attendee.totalTickets} ticket{attendee.totalTickets !== 1 ? 's' : ''} • 
-                    {attendee.eventNames.join(', ')}
-                  </p>
-                </div>
-                <span className="text-xs text-gray-500">#{index + 1}</span>
+        {/* Import Progress Logs - Enhanced Display */}
+        <div className="bg-gray-900/50 border border-gray-600/50 rounded-lg p-4 flex-1">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-gray-300 font-semibold text-sm">Import Progress</h4>
+            {loading && (
+              <div className="flex items-center space-x-2">
+                <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-b-2 border-orange-500"></div>
+                <span className="text-xs text-orange-400">Processing...</span>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {uniqueAttendees.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-gray-400">No attendees found in your Eventbrite events.</p>
+            )}
           </div>
-        )}
-
-        {/* API Logs Display */}
-        {apiLogs.length > 0 && (
-          <div className="p-3 bg-gray-900/50 border border-gray-600/50 rounded-lg">
-            <h4 className="text-gray-300 font-semibold mb-2 text-sm">Import Process Logs:</h4>
-            <div className="max-h-32 overflow-y-auto text-xs font-mono">
-              {apiLogs.map((log, index) => (
-                <div key={index} className="text-gray-400 mb-1">
-                  {log}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="flex space-x-4">
-          <CustomButton
-            onClick={() => setCurrentStep('token')}
-            variant="outline"
-            className="flex-1"
-          >
-            Back to Token
-          </CustomButton>
-          <CustomButton
-            onClick={handleImportAttendees}
-            variant="primary"
-            className="flex-1"
-            disabled={uniqueAttendees.length === 0 || loading}
-          >
-            {loading ? (
-              <div className="flex items-center justify-center space-x-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
-                <span>Importing...</span>
+          
+          <div className="h-64 overflow-y-auto text-xs font-mono space-y-1">
+            {apiLogs.length === 0 ? (
+              <div className="text-gray-500 italic text-center py-8">
+                Import logs will appear here during the process...
               </div>
             ) : (
-              `Import ${uniqueAttendees.length} Members`
+              apiLogs.map((log, index) => (
+                <div key={index} className="text-gray-300 py-1 px-2 bg-gray-800/30 rounded border-l-2 border-gray-600">
+                  <span className="text-gray-500 mr-2">[{new Date().toLocaleTimeString()}]</span>
+                  {log}
+                </div>
+              ))
             )}
-          </CustomButton>
+          </div>
+          
+          {/* Progress Summary */}
+          {loading && (
+            <div className="mt-3 pt-3 border-t border-gray-600/30">
+              <div className="text-xs text-gray-400">
+                <div className="flex justify-between mb-1">
+                  <span>Progress:</span>
+                  <span>{apiLogs.length} steps completed</span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-1.5">
+                  <div 
+                    className="bg-orange-500 h-1.5 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min((apiLogs.length / 8) * 100, 100)}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Right Side - Import Preview */}
-      <div className="w-full lg:w-1/2 relative overflow-hidden rounded-2xl">
-        <div className="w-full h-full min-h-[400px] lg:min-h-[600px] bg-gradient-to-br from-green-900/30 to-blue-900/30 flex items-center justify-center">
-          <div className="text-center text-white/90 p-8">
-            <svg className="w-24 h-24 mx-auto mb-4 text-green-400" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <p className="text-xl font-medium opacity-80">Ready to Import</p>
-            <p className="text-sm opacity-60">Your community will be created with {uniqueAttendees.length} unique members</p>
+      {/* Right Side - Editable Attendees Grid */}
+      <div className="w-full lg:w-2/3 flex flex-col max-h-full">
+        <div className="bg-gray-800/30 border border-gray-600/50 rounded-lg p-4 flex flex-col h-full">
+          <h3 className="text-lg font-semibold text-white mb-4 flex-shrink-0">Attendee Details - Click to Edit</h3>
+          
+          {editableAttendees.length === 0 ? (
+            <div className="flex-1 flex items-center justify-center">
+              <p className="text-gray-400">No attendees found in your Eventbrite events.</p>
+            </div>
+          ) : (
+            <div className="flex-1 overflow-y-auto min-h-0 mb-4">
+              <div className="space-y-3 pr-2">
+                {editableAttendees.map((attendee, index) => (
+                  <div key={attendee.id} className="bg-gray-700/50 border border-gray-600/30 rounded-lg p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {/* First Name */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-300 mb-1">First Name</label>
+                        <input
+                          type="text"
+                          value={attendee.firstName}
+                          onChange={(e) => handleAttendeeEdit(attendee.id, 'firstName', e.target.value)}
+                          className="w-full px-3 py-2 bg-gray-800/50 border border-gray-600/50 rounded-md text-white text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50"
+                          placeholder="First name"
+                        />
+                      </div>
+                      
+                      {/* Last Name */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-300 mb-1">Last Name</label>
+                        <input
+                          type="text"
+                          value={attendee.lastName}
+                          onChange={(e) => handleAttendeeEdit(attendee.id, 'lastName', e.target.value)}
+                          className="w-full px-3 py-2 bg-gray-800/50 border border-gray-600/50 rounded-md text-white text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50"
+                          placeholder="Last name"
+                        />
+                      </div>
+                      
+                      {/* Email */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-300 mb-1">Email</label>
+                        <input
+                          type="email"
+                          value={attendee.email}
+                          onChange={(e) => handleAttendeeEdit(attendee.id, 'email', e.target.value)}
+                          className="w-full px-3 py-2 bg-gray-800/50 border border-gray-600/50 rounded-md text-white text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50"
+                          placeholder="email@example.com"
+                        />
+                      </div>
+                      
+                      {/* Phone */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-300 mb-1">Phone</label>
+                        <input
+                          type="tel"
+                          value={attendee.phone}
+                          onChange={(e) => handleAttendeeEdit(attendee.id, 'phone', e.target.value)}
+                          className="w-full px-3 py-2 bg-gray-800/50 border border-gray-600/50 rounded-md text-white text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50"
+                          placeholder="+1 (555) 123-4567"
+                        />
+                      </div>
+                      
+                      {/* Date of Birth */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-300 mb-1">Date of Birth</label>
+                        <input
+                          type="date"
+                          value={attendee.dob}
+                          onChange={(e) => handleAttendeeEdit(attendee.id, 'dob', e.target.value)}
+                          className="w-full px-3 py-2 bg-gray-800/50 border border-gray-600/50 rounded-md text-white text-sm focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/50"
+                        />
+                      </div>
+                      
+                      {/* Event Info */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-300 mb-1">Events ({attendee.totalTickets} tickets)</label>
+                        <div className="px-3 py-2 bg-gray-900/50 border border-gray-600/30 rounded-md text-gray-400 text-sm">
+                          {attendee.eventNames.join(', ') || 'No events'}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-2 flex justify-between items-center">
+                      <span className="text-xs text-gray-500">Attendee #{index + 1}</span>
+                      <span className="text-xs text-gray-500">{attendee.totalTickets} ticket{attendee.totalTickets !== 1 ? 's' : ''}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Action Buttons - Always Visible */}
+          <div className="flex space-x-4 pt-4 border-t border-gray-600/30 flex-shrink-0 bg-gray-800/30 -mx-4 -mb-4 px-4 pb-4 rounded-b-lg">
+            <CustomButton
+              onClick={() => setCurrentStep('token')}
+              variant="outline"
+              className="flex-1"
+            >
+              Back
+            </CustomButton>
+            <CustomButton
+              onClick={handleImportAttendees}
+              variant="primary"
+              className="flex-1"
+              disabled={editableAttendees.length === 0 || loading}
+            >
+              {loading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                  <span>Importing...</span>
+                </div>
+              ) : (
+                `Import ${editableAttendees.length} Members`
+              )}
+            </CustomButton>
           </div>
         </div>
       </div>
@@ -524,7 +614,7 @@ const EventbriteOnboardingDialog: React.FC<EventbriteOnboardingDialogProps> = ({
           <h4 className="text-green-300 font-semibold mb-2">Import Summary</h4>
           <div className="text-sm text-green-200 space-y-1">
             <p>Organization: {organizationName}</p>
-            <p>Unique Members Imported: {uniqueAttendees.length}</p>
+            <p>Members Imported: {editableAttendees.length}</p>
             <p>Events Processed: {totalEvents}</p>
             <p>Status: Successfully imported to community</p>
           </div>
