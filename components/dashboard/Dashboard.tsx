@@ -6,6 +6,7 @@ import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import Sidebar from '../../components/dashboard/Sidebar';
 import ImportCommunityDialog from '../community/ImportCommunityDialog';
+import EventbriteOnboardingDialog from '../community/EventbriteOnboardingDialog';
 
 interface DashboardProps {
   children?: React.ReactNode;
@@ -16,6 +17,7 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
   const [communities, setCommunities] = useState<any[]>([]);
   const [loadingCommunities, setLoadingCommunities] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showEventbriteDialog, setShowEventbriteDialog] = useState(false);
   
   // Check for user communities
   useEffect(() => {
@@ -71,9 +73,37 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
   
   const handleMethodSelect = (method: 'eventbrite' | 'csv' | 'manual') => {
     console.log('Selected method:', method);
-    // TODO: Handle method selection - navigate to appropriate flow
-    // For now, just close the dialog
+    
+    // Close the import dialog first
     setShowOnboarding(false);
+    
+    // Open appropriate dialog based on method
+    switch (method) {
+      case 'eventbrite':
+        setShowEventbriteDialog(true);
+        break;
+      case 'csv':
+        // TODO: Implement CSV upload dialog
+        console.log('CSV import not yet implemented');
+        break;
+      case 'manual':
+        // TODO: Implement manual creation dialog
+        console.log('Manual creation not yet implemented');
+        break;
+    }
+  };
+  
+  const handleEventbriteComplete = (data: any) => {
+    console.log('Eventbrite import completed:', data);
+    setShowEventbriteDialog(false);
+    // Refresh communities list after successful import
+    handleCommunityCreated();
+  };
+  
+  const handleEventbriteClose = () => {
+    setShowEventbriteDialog(false);
+    // Optionally show the main onboarding dialog again
+    setShowOnboarding(true);
   };
   
   // Show loading state while checking communities
@@ -257,6 +287,13 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
         isOpen={showOnboarding}
         onClose={handleCloseOnboarding}
         onMethodSelect={handleMethodSelect}
+      />
+      
+      {/* Eventbrite Onboarding Dialog */}
+      <EventbriteOnboardingDialog
+        isOpen={showEventbriteDialog}
+        onClose={handleEventbriteClose}
+        onComplete={handleEventbriteComplete}
       />
     </div>
   );
