@@ -1,6 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../../contexts/AuthContext';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
 import { CustomButton } from '../index';
 import Dialog from '../ui/Dialog';
 import { colors, fonts } from '../../styles/theme';
@@ -35,6 +39,7 @@ const EventbriteOnboardingDialog: React.FC<EventbriteOnboardingDialogProps> = ({
   onClose,
   onComplete
 }) => {
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState<Step>('token');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -42,17 +47,68 @@ const EventbriteOnboardingDialog: React.FC<EventbriteOnboardingDialogProps> = ({
   const [events, setEvents] = useState<EventbriteEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventbriteEvent | null>(null);
   const [attendees, setAttendees] = useState<EventbriteAttendee[]>([]);
+  const [apiLogs, setApiLogs] = useState<string[]>([]);
+
+  // Load saved token when dialog opens
+  useEffect(() => {
+    const loadSavedToken = async () => {
+      if (!user || !isOpen) return;
+      
+      try {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          if (userData.eventbriteToken) {
+            setToken(userData.eventbriteToken);
+            console.log('✅ Loaded saved Eventbrite token for user');
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error loading saved token:', error);
+      }
+    };
+    
+    loadSavedToken();
+  }, [user, isOpen]);
+
+  // Helper function to add API logs
+  const addLog = (message: string) => {
+    const timestamp = new Date().toISOString();
+    const logMessage = `[${timestamp}] ${message}`;
+    console.log(logMessage);
+    setApiLogs(prev => [...prev, logMessage]);
+  };
+
+  // Save token to user profile
+  const saveToken = async (tokenToSave: string) => {
+    if (!user) return;
+    
+    try {
+      await setDoc(doc(db, 'users', user.uid), {
+        eventbriteToken: tokenToSave
+      }, { merge: true });
+      addLog('✅ Token saved to user profile');
+    } catch (error) {
+      addLog(`❌ Error saving token: ${error}`);
+    }
+  };
 
   const handleTokenSubmit = async () => {
     if (!token.trim()) {
       setError('Please enter your Eventbrite API token');
+      addLog('❌ Token validation failed: Empty token');
       return;
     }
 
     setLoading(true);
     setError('');
+    setApiLogs([]); // Clear previous logs
+    addLog('🔄 Starting Eventbrite API connection...');
+    addLog(`📝 Token length: ${token.length} characters`);
+    addLog(`🔗 API Endpoint: /api/eventbrite/events`);
 
     try {
+      addLog('📡 Sending request to Eventbrite API...');
       const response = await fetch('/api/eventbrite/events', {
         method: 'POST',
         headers: {
@@ -61,18 +117,52 @@ const EventbriteOnboardingDialog: React.FC<EventbriteOnboardingDialogProps> = ({
         body: JSON.stringify({ token }),
       });
 
+      addLog(`📊 Response status: ${response.status} ${response.statusText}`);
+
       if (!response.ok) {
-        throw new Error('Failed to fetch events');
+        const errorData = await response.json().catch(() => ({}));
+        addLog(`❌ API Error Response: ${JSON.stringify(errorData, null, 2)}`);
+        
+        let errorMessage = 'Failed to fetch events. ';
+        if (response.status === 401) {
+          errorMessage += 'Invalid token - please check your Eventbrite private token.';
+          addLog('❌ Authentication failed: Invalid or expired token');
+        } else if (response.status === 403) {
+          errorMessage += 'Access forbidden - token may not have required permissions.';
+          addLog('❌ Authorization failed: Insufficient permissions');
+        } else if (response.status === 429) {
+          errorMessage += 'Rate limit exceeded - please try again later.';
+          addLog('❌ Rate limit exceeded');
+        } else {
+          errorMessage += `API error (${response.status}): ${errorData.error || 'Unknown error'}`;
+          addLog(`❌ API Error: ${errorData.error || 'Unknown error'}`);
+        }
+        
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
+      addLog(`✅ Successfully fetched ${data.events?.length || 0} events`);
+      addLog(`📋 Events data: ${JSON.stringify(data.events?.slice(0, 2), null, 2)}...`);
+      
+      // Save token for future use
+      await saveToken(token);
+      
       setEvents(data.events || []);
       setCurrentStep('events');
+      addLog('✅ Successfully moved to events selection step');
     } catch (error) {
-      console.error('Error fetching events:', error);
-      setError('Failed to fetch events. Please check your token and try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      addLog(`❌ Final error: ${errorMessage}`);
+      console.error('❌ Eventbrite API Error Details:', {
+        error,
+        token: token.substring(0, 10) + '...',
+        timestamp: new Date().toISOString()
+      });
+      setError(errorMessage);
     } finally {
       setLoading(false);
+      addLog('🏁 Token submission process completed');
     }
   };
 
@@ -80,6 +170,11 @@ const EventbriteOnboardingDialog: React.FC<EventbriteOnboardingDialogProps> = ({
     setSelectedEvent(event);
     setLoading(true);
     setError('');
+    
+    addLog(`🎯 Selected event: ${event.name} (ID: ${event.id})`);
+    addLog(`📅 Event date: ${new Date(event.start).toLocaleDateString()}`);
+    addLog(`👥 Expected attendees: ${event.attendee_count || 'Unknown'}`);
+    addLog('📡 Fetching attendees from Eventbrite API...');
 
     try {
       const response = await fetch('/api/eventbrite/attendees', {
@@ -90,26 +185,58 @@ const EventbriteOnboardingDialog: React.FC<EventbriteOnboardingDialogProps> = ({
         body: JSON.stringify({ token, eventId: event.id }),
       });
 
+      addLog(`📊 Attendees API response status: ${response.status} ${response.statusText}`);
+
       if (!response.ok) {
-        throw new Error('Failed to fetch attendees');
+        const errorData = await response.json().catch(() => ({}));
+        addLog(`❌ Attendees API Error: ${JSON.stringify(errorData, null, 2)}`);
+        
+        let errorMessage = 'Failed to fetch attendees. ';
+        if (response.status === 401) {
+          errorMessage += 'Token authentication failed.';
+          addLog('❌ Attendees API: Authentication failed');
+        } else if (response.status === 404) {
+          errorMessage += 'Event not found or no access to this event.';
+          addLog('❌ Attendees API: Event not found');
+        } else {
+          errorMessage += `API error (${response.status}): ${errorData.error || 'Unknown error'}`;
+          addLog(`❌ Attendees API Error: ${errorData.error || 'Unknown error'}`);
+        }
+        
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
+      const attendeeCount = data.attendees?.length || 0;
+      addLog(`✅ Successfully fetched ${attendeeCount} attendees`);
+      
       setAttendees(data.attendees || []);
       
       // Console dump the Eventbrite data as requested in notes
       console.log('=== EVENTBRITE DATA DUMP ===');
       console.log('Selected Event:', event);
       console.log('Attendees Data:', data.attendees);
-      console.log('Total Attendees:', data.attendees?.length || 0);
+      console.log('Total Attendees:', attendeeCount);
+      console.log('Sample Attendee:', data.attendees?.[0]);
       console.log('=== END EVENTBRITE DATA DUMP ===');
+      
+      addLog('📋 Eventbrite data dumped to console for review');
+      addLog('✅ Moving to preview step');
       
       setCurrentStep('preview');
     } catch (error) {
-      console.error('Error fetching attendees:', error);
-      setError('Failed to fetch attendees. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      addLog(`❌ Attendees fetch error: ${errorMessage}`);
+      console.error('❌ Eventbrite Attendees API Error:', {
+        error,
+        eventId: event.id,
+        eventName: event.name,
+        timestamp: new Date().toISOString()
+      });
+      setError(errorMessage);
     } finally {
       setLoading(false);
+      addLog('🏁 Attendees fetch process completed');
     }
   };
 
@@ -181,6 +308,20 @@ const EventbriteOnboardingDialog: React.FC<EventbriteOnboardingDialogProps> = ({
           {error && (
             <div className="p-3 bg-red-900/30 border border-red-500/50 text-red-400 rounded-lg text-sm">
               {error}
+            </div>
+          )}
+
+          {/* API Logs Display */}
+          {apiLogs.length > 0 && (
+            <div className="p-3 bg-gray-900/50 border border-gray-600/50 rounded-lg">
+              <h4 className="text-gray-300 font-semibold mb-2 text-sm">API Debug Logs:</h4>
+              <div className="max-h-32 overflow-y-auto text-xs font-mono">
+                {apiLogs.map((log, index) => (
+                  <div key={index} className="text-gray-400 mb-1">
+                    {log}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
