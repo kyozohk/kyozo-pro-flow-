@@ -46,7 +46,7 @@ const Dialog: React.FC<DialogProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50">
       {/* Backdrop with blur effect */}
       <div 
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -56,11 +56,14 @@ const Dialog: React.FC<DialogProps> = ({
       {/* Dialog content */}
       <div 
         ref={dialogRef}
-        className={`relative bg-[#1C1C1E] rounded-3xl shadow-2xl max-h-[90vh] overflow-hidden ${className}`}
+        className={`absolute inset-0 bg-[#1C1C1E] rounded-3xl shadow-2xl overflow-hidden ${className}`}
         style={{
-          background: 'linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05)'
+          margin: '80px',
+          width: 'calc(100vw - 160px)',
+          height: 'calc(100vh - 160px)',
+          background: '#181818',
+          border: '1px solid #2A2A2A',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(42, 42, 42, 0.5)'
         }}
       >
         {/* Close button - only show if dismissible */}

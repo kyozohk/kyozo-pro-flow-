@@ -9,7 +9,7 @@ import { db, storage } from '../../lib/firebase';
 import { parseCSV, validateCSVFile } from '../../lib/csvParser';
 import Dialog from '../Dialog';
 import { CustomButton } from '../index';
-import { colors } from '../../styles/theme';
+import { colors, fonts } from '../../styles/theme';
 import CommunityForm from './CommunityForm';
 
 export enum CommunityCreationMethod {
@@ -22,6 +22,7 @@ export enum CommunityStep {
   METHOD_SELECTION = 'method_selection',
   CSV_UPLOAD = 'csv_upload',
   EVENTBRITE_TOKEN = 'eventbrite_token',
+  PREVIEW_DATA = 'preview_data',
   MANUAL_FORM = 'manual_form'
 }
 
@@ -164,58 +165,141 @@ const CommunityOnboardingDialog: React.FC<CommunityOnboardingDialogProps> = ({
   };
 
   const renderMethodSelection = () => (
-    <div className="space-y-8">
-      <div className="text-center">
-        <h3 className="text-3xl font-semibold text-white mb-4">Create Your First Community</h3>
-        <p className="text-gray-300 mb-8">Choose how you'd like to set up your community</p>
+    <div className="w-full h-full flex flex-col md:flex-row items-start gap-8 md:gap-12 p-8 md:p-12">
+      {/* Left Side - Text Content (Card1 Style) */}
+      <div className="w-full md:w-1/2 space-y-6 text-center md:text-left">
+        <p
+          className="text-sm font-bold tracking-[0.2em] uppercase"
+          style={{ color: colors.card.tagText, fontFamily: fonts.card }}
+        >
+          COMMUNITY SETUP
+        </p>
+        <h2
+          className="text-3xl md:text-5xl font-bold leading-tight tracking-tighter"
+          style={{ color: colors.card.headingText, fontFamily: fonts.card, letterSpacing: '-0.03em' }}
+        >
+          Create Your First Community
+        </h2>
+        <p 
+          className="text-base md:text-lg leading-relaxed"
+          style={{ color: colors.card.bodyText, fontFamily: fonts.card }}
+        >
+          Choose how you'd like to set up your community and import your members. You can upload a CSV file, connect your Eventbrite account, or create everything manually.
+        </p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Right Side - Method Cards */}
+      <div className="w-full md:w-1/2 grid grid-cols-1 gap-4">
         {/* CSV Import */}
         <div 
           onClick={() => handleMethodSelect(CommunityCreationMethod.CSV_IMPORT)}
-          className="p-8 bg-gray-800/50 border border-gray-600 rounded-xl hover:border-[#E0407B] cursor-pointer transition-all duration-300 group"
+          className="group cursor-pointer transition-all duration-300 hover:scale-105"
         >
-          <div className="text-center">
-            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-purple-600 to-pink-500 rounded-full flex items-center justify-center">
-              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-              </svg>
+          <div 
+            className="p-4 rounded-xl border transition-all duration-300 group-hover:border-opacity-100"
+            style={{ 
+              backgroundColor: colors.card.background, 
+              borderColor: colors.card.border,
+              borderWidth: '1px'
+            }}
+          >
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h4 
+                  className="text-lg font-bold mb-1"
+                  style={{ color: colors.card.headingText, fontFamily: fonts.card }}
+                >
+                  Import from CSV
+                </h4>
+                <p 
+                  className="text-sm leading-relaxed"
+                  style={{ color: colors.card.bodyText, fontFamily: fonts.card }}
+                >
+                  Upload a CSV file with your member data to quickly populate
+                </p>
+              </div>
             </div>
-            <h4 className="text-xl font-semibold text-white mb-3">Import from CSV</h4>
-            <p className="text-gray-400">Upload a CSV file with your member data</p>
           </div>
         </div>
 
         {/* Eventbrite Import */}
         <div 
           onClick={() => handleMethodSelect(CommunityCreationMethod.EVENTBRITE_IMPORT)}
-          className="p-8 bg-gray-800/50 border border-gray-600 rounded-xl hover:border-[#E0407B] cursor-pointer transition-all duration-300 group"
+          className="group cursor-pointer transition-all duration-300 hover:scale-105"
         >
-          <div className="text-center">
-            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-600 to-purple-500 rounded-full flex items-center justify-center">
-              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-              </svg>
+          <div 
+            className="p-4 rounded-xl border transition-all duration-300 group-hover:border-opacity-100"
+            style={{ 
+              backgroundColor: '#ffffff', 
+              borderColor: '#e5e5e5',
+              borderWidth: '1px'
+            }}
+          >
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center flex-shrink-0 p-2">
+                <img 
+                  src="/eventbritelogo.png" 
+                  alt="Eventbrite" 
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div className="flex-1">
+                <h4 
+                  className="text-lg font-bold mb-1"
+                  style={{ color: '#1a1a1a', fontFamily: fonts.card }}
+                >
+                  Import from Eventbrite
+                </h4>
+                <p 
+                  className="text-sm leading-relaxed"
+                  style={{ color: '#666666', fontFamily: fonts.card }}
+                >
+                  Connect your Eventbrite account and import attendees
+                </p>
+              </div>
             </div>
-            <h4 className="text-xl font-semibold text-white mb-3">Import from Eventbrite</h4>
-            <p className="text-gray-400">Connect your Eventbrite account</p>
           </div>
         </div>
 
         {/* Manual Creation */}
         <div 
           onClick={() => handleMethodSelect(CommunityCreationMethod.MANUAL_CREATION)}
-          className="p-8 bg-gray-800/50 border border-gray-600 rounded-xl hover:border-[#E0407B] cursor-pointer transition-all duration-300 group"
+          className="group cursor-pointer transition-all duration-300 hover:scale-105"
         >
-          <div className="text-center">
-            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-teal-600 to-blue-500 rounded-full flex items-center justify-center">
-              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
+          <div 
+            className="p-4 rounded-xl border transition-all duration-300 group-hover:border-opacity-100"
+            style={{ 
+              backgroundColor: colors.card.background, 
+              borderColor: colors.card.border,
+              borderWidth: '1px'
+            }}
+          >
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-blue-500 flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h4 
+                  className="text-lg font-bold mb-1"
+                  style={{ color: colors.card.headingText, fontFamily: fonts.card }}
+                >
+                  Create Manually
+                </h4>
+                <p 
+                  className="text-sm leading-relaxed"
+                  style={{ color: colors.card.bodyText, fontFamily: fonts.card }}
+                >
+                  Set up your community from scratch and add members later
+                </p>
+              </div>
             </div>
-            <h4 className="text-xl font-semibold text-white mb-3">Create Manually</h4>
-            <p className="text-gray-400">Set up your community from scratch</p>
           </div>
         </div>
       </div>
@@ -230,6 +314,8 @@ const CommunityOnboardingDialog: React.FC<CommunityOnboardingDialogProps> = ({
         return 'Upload CSV';
       case CommunityStep.EVENTBRITE_TOKEN:
         return 'Connect Eventbrite';
+      case CommunityStep.PREVIEW_DATA:
+        return 'Preview Data';
       case CommunityStep.MANUAL_FORM:
         return 'Community Profile';
       default:
@@ -394,7 +480,7 @@ const CommunityOnboardingDialog: React.FC<CommunityOnboardingDialogProps> = ({
           setError('Failed to fetch event attendees');
         }
         
-        setCurrentStep(CommunityStep.MANUAL_FORM);
+        setCurrentStep(CommunityStep.PREVIEW_DATA);
       } else {
         setError('No events found in your Eventbrite account');
       }
@@ -404,6 +490,101 @@ const CommunityOnboardingDialog: React.FC<CommunityOnboardingDialogProps> = ({
     } finally {
       setFetchingEvents(false);
     }
+  };
+
+  const renderPreviewData = () => {
+    const dataSource = selectedMethod === CommunityCreationMethod.EVENTBRITE_IMPORT ? 'Eventbrite' : 'CSV';
+    const memberCount = csvMembers.length;
+    
+    return (
+      <div className="space-y-6">
+        <div className="text-center">
+          <h3 className="text-2xl font-semibold text-white mb-4">Preview Imported Data</h3>
+          <p className="text-gray-300 mb-2">Review the {memberCount} members imported from {dataSource}</p>
+          <p className="text-gray-400 text-sm">Make sure the data looks correct before proceeding</p>
+        </div>
+        
+        {/* Data Summary */}
+        <div className="bg-gray-800/50 rounded-xl p-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div>
+              <div className="text-2xl font-bold text-white">{memberCount}</div>
+              <div className="text-gray-400 text-sm">Total Members</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-green-400">{csvMembers.filter(m => m.email).length}</div>
+              <div className="text-gray-400 text-sm">With Email</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-blue-400">{csvMembers.filter(m => m.phone).length}</div>
+              <div className="text-gray-400 text-sm">With Phone</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-purple-400">{csvMembers.filter(m => m.name || (m.firstName && m.lastName)).length}</div>
+              <div className="text-gray-400 text-sm">With Name</div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Data Table */}
+        <div className="bg-gray-800/50 rounded-xl overflow-hidden">
+          <div className="max-h-96 overflow-y-auto">
+            <table className="w-full">
+              <thead className="bg-gray-700/50 sticky top-0">
+                <tr>
+                  <th className="text-left p-4 text-gray-300 font-medium">#</th>
+                  <th className="text-left p-4 text-gray-300 font-medium">Name</th>
+                  <th className="text-left p-4 text-gray-300 font-medium">Email</th>
+                  <th className="text-left p-4 text-gray-300 font-medium">Phone</th>
+                </tr>
+              </thead>
+              <tbody>
+                {csvMembers.slice(0, 50).map((member, index) => {
+                  const displayName = member.name || `${member.firstName || ''} ${member.lastName || ''}`.trim() || 'N/A';
+                  return (
+                    <tr key={index} className="border-t border-gray-700/50 hover:bg-gray-700/30">
+                      <td className="p-4 text-gray-400">{index + 1}</td>
+                      <td className="p-4 text-white">{displayName}</td>
+                      <td className="p-4 text-gray-300">{member.email || 'N/A'}</td>
+                      <td className="p-4 text-gray-300">{member.phone || 'N/A'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            {memberCount > 50 && (
+              <div className="p-4 text-center text-gray-400 bg-gray-700/30">
+                Showing first 50 of {memberCount} members
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {/* Navigation Buttons */}
+        <div className="flex justify-between pt-6">
+          <CustomButton
+            type="button"
+            variant="outline"
+            onClick={() => {
+              if (selectedMethod === CommunityCreationMethod.EVENTBRITE_IMPORT) {
+                setCurrentStep(CommunityStep.EVENTBRITE_TOKEN);
+              } else {
+                setCurrentStep(CommunityStep.CSV_UPLOAD);
+              }
+            }}
+          >
+            Back to Import
+          </CustomButton>
+          <CustomButton
+            type="button"
+            variant="form"
+            onClick={() => setCurrentStep(CommunityStep.MANUAL_FORM)}
+          >
+            Continue to Community Setup
+          </CustomButton>
+        </div>
+      </div>
+    );
   };
 
   const renderCsvUpload = () => (
@@ -583,11 +764,12 @@ const CommunityOnboardingDialog: React.FC<CommunityOnboardingDialogProps> = ({
       onClose={onClose} 
       dismissible={false}
     >
-      <div className="min-w-[900px] max-w-5xl">
+      <div className="w-full h-full" style={{ margin: '80px' }}>
         {currentStep === CommunityStep.METHOD_SELECTION && renderMethodSelection()}
         
         {currentStep === CommunityStep.CSV_UPLOAD && renderCsvUpload()}
         {currentStep === CommunityStep.EVENTBRITE_TOKEN && renderEventbriteToken()}
+        {currentStep === CommunityStep.PREVIEW_DATA && renderPreviewData()}
         {currentStep === CommunityStep.MANUAL_FORM && renderCommunityForm()}
       </div>
     </Dialog>
