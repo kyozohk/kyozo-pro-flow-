@@ -24,9 +24,10 @@ const SuccessView: React.FC<{ message: string }> = ({ message }) => (
 
 interface WaitlistFormProps {
   onSubmitted: () => void;
+  onClose?: () => void;
 }
 
-const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
+const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted, onClose }) => {
   const router = useRouter();
   const { signUpWithEmail, signUpWithPhone, signInWithEmail, signInWithGoogle } = useAuth();
   const [authTab, setAuthTab] = useState<AuthTab>(AuthTab.Email);
@@ -234,7 +235,7 @@ const SignUpForm: React.FC<WaitlistFormProps> = ({ onSubmitted }) => {
   };
 
   return (
-    <Dialog title={getDialogTitle()} onClose={onSubmitted}>
+    <Dialog title={getDialogTitle()} onClose={onClose || (() => {})}>
       
       <div className="flex justify-center items-center bg-[#2C2C2E] rounded-full p-1 mb-8">
         <TabButton label="Email" isActive={authTab === AuthTab.Email} onClick={() => setAuthTab(AuthTab.Email)} />

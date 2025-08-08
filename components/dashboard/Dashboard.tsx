@@ -35,6 +35,7 @@ interface Activity {
 
 const Dashboard: React.FC<DashboardProps> = ({ children }) => {
   const { user } = useAuth();
+  const pathname = usePathname();
   const [communities, setCommunities] = useState<Community[]>([]);
   const [totalMembers, setTotalMembers] = useState(0);
   const [activeMembers, setActiveMembers] = useState(0);
@@ -98,13 +99,17 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
           setActiveMembers(activeMemberCount);
           setRecentActivity(activityList.sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds).slice(0, 5));
         } else {
-          // Show onboarding dialog if no communities exist
-          setShowOnboarding(true);
+          // Only show onboarding dialog if no communities exist AND user is on main dashboard page
+          if (pathname === '/dashboard') {
+            setShowOnboarding(true);
+          }
         }
       } catch (error) {
         console.error('Error fetching communities:', error);
-        // Show onboarding dialog on error as fallback
-        setShowOnboarding(true);
+        // Only show onboarding dialog on error as fallback if on main dashboard page
+        if (pathname === '/dashboard') {
+          setShowOnboarding(true);
+        }
       } finally {
         setLoadingCommunities(false);
       }
@@ -166,15 +171,15 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
             </p>
           </header>
           
-          {/* Main content card with gradient border like dialogs */}
-          <div className="relative rounded-3xl bg-gradient-to-br from-purple-600 via-pink-500 to-blue-500 p-[1px] shadow-2xl">
-            <div className="bg-[#1C1C1E] rounded-[23px] p-8 md:p-12">
+          {/* Main content card with subtle Card0 styling */}
+          <div className="bg-[#1C1C1E] rounded-2xl border border-gray-800 shadow-lg">
+            <div className="p-8 md:p-12">
               {children || (
             communities.length === 0 ? (
               <div className="text-center py-12">
                 <div className="mb-6">
-                  <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-pulse">
-                    <svg className="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <div className="w-24 h-24 bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-700">
+                    <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </div>
@@ -197,12 +202,12 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
               <div className="space-y-8">
                 {/* Hero Section */}
                 <div className="text-center py-8">
-                  <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 transform hover:scale-110 transition-transform">
-                    <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <div className="w-20 h-20 bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-700">
+                    <svg className="w-10 h-10 text-[#E0407B]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                     </svg>
                   </div>
-                  <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
+                  <h2 className="text-3xl font-bold text-white mb-4">
                     Dashboard Overview
                   </h2>
                   <p className="text-gray-300 max-w-lg mx-auto text-lg leading-relaxed">
@@ -212,44 +217,44 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
 
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="group p-6 bg-gradient-to-br from-purple-600/20 to-pink-500/20 rounded-2xl border border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 hover:scale-105">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <div className="p-6 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#E0407B]/30 transition-all duration-300">
+                    <div className="w-12 h-12 bg-[#E0407B]/10 rounded-xl flex items-center justify-center mb-4 border border-[#E0407B]/20">
+                      <svg className="w-6 h-6 text-[#E0407B]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-1">{communities.length}</h3>
-                    <p className="text-gray-300 text-sm">Communities</p>
+                    <p className="text-gray-400 text-sm">Communities</p>
                   </div>
                   
-                  <div className="group p-6 bg-gradient-to-br from-blue-600/20 to-teal-500/20 rounded-2xl border border-blue-500/30 hover:border-blue-400/50 transition-all duration-300 hover:scale-105">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-teal-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <div className="p-6 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300">
+                    <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center mb-4 border border-gray-600">
+                      <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                       </svg>
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-1">{totalMembers}</h3>
-                    <p className="text-gray-300 text-sm">Total Members</p>
+                    <p className="text-gray-400 text-sm">Total Members</p>
                   </div>
                   
-                  <div className="group p-6 bg-gradient-to-br from-orange-600/20 to-yellow-500/20 rounded-2xl border border-orange-500/30 hover:border-orange-400/50 transition-all duration-300 hover:scale-105">
-                    <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <div className="p-6 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300">
+                    <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center mb-4 border border-gray-600">
+                      <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-1">{activeMembers}</h3>
-                    <p className="text-gray-300 text-sm">Active Members</p>
+                    <p className="text-gray-400 text-sm">Active Members</p>
                   </div>
                   
-                  <div className="group p-6 bg-gradient-to-br from-green-600/20 to-emerald-500/20 rounded-2xl border border-green-500/30 hover:border-green-400/50 transition-all duration-300 hover:scale-105">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <div className="p-6 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300">
+                    <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center mb-4 border border-gray-600">
+                      <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
                       </svg>
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-1">{totalMembers > 0 ? Math.round((activeMembers / totalMembers) * 100) : 0}%</h3>
-                    <p className="text-gray-300 text-sm">Active Rate</p>
+                    <p className="text-gray-400 text-sm">Active Rate</p>
                   </div>
                 </div>
 
@@ -259,7 +264,7 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <button
                       onClick={() => setShowOnboarding(true)}
-                      className="group p-6 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#E0407B]/50 transition-all duration-300 hover:scale-105 text-left"
+                      className="group p-6 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-[#E0407B]/50 transition-all duration-300 text-left"
                     >
                       <div className="w-10 h-10 bg-[#E0407B]/20 rounded-lg flex items-center justify-center mb-3 group-hover:bg-[#E0407B]/30 transition-colors">
                         <svg className="w-5 h-5 text-[#E0407B]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -270,9 +275,9 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
                       <p className="text-gray-400 text-sm">Start a new community</p>
                     </button>
                     
-                    <div className="group p-6 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-blue-500/50 transition-all duration-300 hover:scale-105">
-                      <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-500/30 transition-colors">
-                        <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <div className="group p-6 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300">
+                      <div className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center mb-3 border border-gray-600">
+                        <svg className="w-5 h-5 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125V15.75a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z" />
                         </svg>
                       </div>
@@ -280,9 +285,9 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
                       <p className="text-gray-400 text-sm">Sync event attendees</p>
                     </div>
                     
-                    <div className="group p-6 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300 hover:scale-105">
-                      <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center mb-3 group-hover:bg-green-500/30 transition-colors">
-                        <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <div className="group p-6 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300">
+                      <div className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center mb-3 border border-gray-600">
+                        <svg className="w-5 h-5 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-4.5B4.875 8.25A3.375 3.375 0 001.5 11.625v2.625m18 0A2.25 2.25 0 0119.5 16.5h-2.25a2.25 2.25 0 01-2.25-2.25m4.5 0a2.25 2.25 0 01-2.25 2.25H15a2.25 2.25 0 01-2.25-2.25m4.5 0V12a9 9 0 00-9-9 9 9 0 00-9 9v4.5a2.25 2.25 0 002.25 2.25h13.5a2.25 2.25 0 002.25-2.25V15z" />
                         </svg>
                       </div>

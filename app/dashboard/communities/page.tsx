@@ -5,7 +5,6 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { collection, query, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
 import Dashboard from '../../../components/dashboard/Dashboard';
-import ImportCommunityDialog from '../../../components/community/ImportCommunityDialog';
 import EventbriteOnboardingDialog from '../../../components/community/EventbriteOnboardingDialog';
 import Link from 'next/link';
 
@@ -254,15 +253,7 @@ const CommunitiesPage: React.FC = () => {
             </Link>
           ))}
         </div>
-      )}
-
-      {/* Import Community Dialog */}
-      <ImportCommunityDialog
-        isOpen={showImportDialog}
-        onClose={() => setShowImportDialog(false)}
-        onMethodSelect={handleMethodSelect}
-      />
-      
+      )}      
       {/* Eventbrite Onboarding Dialog */}
       <EventbriteOnboardingDialog
         isOpen={showEventbriteDialog}

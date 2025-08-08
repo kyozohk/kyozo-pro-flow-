@@ -81,6 +81,7 @@ const UnifiedAuthDialog: React.FC<UnifiedAuthDialogProps> = ({
         return (
           <SignupForm 
             onSubmitted={handleSignupComplete}
+            onClose={onClose}
           />
         );
       
@@ -102,6 +103,7 @@ const UnifiedAuthDialog: React.FC<UnifiedAuthDialogProps> = ({
         return (
           <SignupForm 
             onSubmitted={handleSignupComplete}
+            onClose={onClose}
           />
         );
     }
