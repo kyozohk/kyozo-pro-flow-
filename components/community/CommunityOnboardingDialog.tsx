@@ -2,6 +2,11 @@
 
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../../contexts/AuthContext';
+import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../../lib/firebase';
+import { parseCSV, validateCSVFile } from '../../lib/csvParser';
 import Dialog from '../Dialog';
 import { CustomButton } from '../index';
 import { colors } from '../../styles/theme';
@@ -48,14 +53,17 @@ const CommunityOnboardingDialog: React.FC<CommunityOnboardingDialogProps> = ({
   
   const [eventbriteToken, setEventbriteToken] = useState('');
   const [csvFile, setCsvFile] = useState<File | null>(null);
-  const [dragActive, setDragActive] = useState(false);
   const [eventbriteEvents, setEventbriteEvents] = useState<any[]>([]);
   const [selectedEventId, setSelectedEventId] = useState<string>('');
   const [fetchingEvents, setFetchingEvents] = useState(false);
-  
+  const [dragActive, setDragActive] = useState(false);
+  const [csvMembers, setCsvMembers] = useState<any[]>([]);
+  const [importingMembers, setImportingMembers] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const backgroundInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+  const { user } = useAuth();
 
   const themeColors = [
     { name: 'Pink', value: colors.accent, class: 'bg-pink-500' },
@@ -79,6 +87,8 @@ const CommunityOnboardingDialog: React.FC<CommunityOnboardingDialogProps> = ({
         break;
     }
   };
+
+
 
   const handleCommunitySubmit = async () => {
     setLoading(true);
@@ -237,7 +247,7 @@ const CommunityOnboardingDialog: React.FC<CommunityOnboardingDialogProps> = ({
     }
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
@@ -247,18 +257,66 @@ const CommunityOnboardingDialog: React.FC<CommunityOnboardingDialogProps> = ({
       if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
         setCsvFile(file);
         setError('');
+        
+        // Parse CSV and log the data (same as file select)
+        try {
+          console.log('📄 CSV File Dropped:', {
+            name: file.name,
+            size: `${(file.size / 1024).toFixed(1)} KB`,
+            type: file.type
+          });
+          
+          const fileContent = await file.text();
+          const parseResult = parseCSV(fileContent);
+          console.log('📊 CSV Parse Result:', parseResult);
+          
+          if (parseResult.members && parseResult.members.length > 0) {
+            setCsvMembers(parseResult.members);
+            console.log(`👥 Found ${parseResult.members.length} members in CSV`);
+            console.log('👤 Sample Member:', parseResult.members[0]);
+          } else {
+            console.warn('⚠️ No valid members found in CSV');
+          }
+        } catch (parseError: any) {
+          console.error('❌ CSV Parse Error:', parseError);
+          setError(parseError.message || 'Failed to parse CSV file');
+        }
       } else {
         setError('Please upload a CSV file');
       }
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
         setCsvFile(file);
         setError('');
+        
+        // Parse CSV and log the data
+        try {
+          console.log('📄 CSV File Selected:', {
+            name: file.name,
+            size: `${(file.size / 1024).toFixed(1)} KB`,
+            type: file.type
+          });
+          
+          const fileContent = await file.text();
+          const parseResult = parseCSV(fileContent);
+          console.log('📊 CSV Parse Result:', parseResult);
+          
+          if (parseResult.members && parseResult.members.length > 0) {
+            setCsvMembers(parseResult.members);
+            console.log(`👥 Found ${parseResult.members.length} members in CSV`);
+            console.log('👤 Sample Member:', parseResult.members[0]);
+          } else {
+            console.warn('⚠️ No valid members found in CSV');
+          }
+        } catch (parseError: any) {
+          console.error('❌ CSV Parse Error:', parseError);
+          setError(parseError.message || 'Failed to parse CSV file');
+        }
       } else {
         setError('Please upload a CSV file');
       }
@@ -290,17 +348,58 @@ const CommunityOnboardingDialog: React.FC<CommunityOnboardingDialogProps> = ({
         throw new Error(data.error || 'Failed to fetch events');
       }
       
+      console.log('🎫 Eventbrite Events Data:', data);
+      
       if (data.events && data.events.length > 0) {
         setEventbriteEvents(data.events);
-        // Auto-select first event if only one
-        if (data.events.length === 1) {
-          setSelectedEventId(data.events[0].id);
+        
+        // Auto-select first event and fetch its attendees
+        const firstEvent = data.events[0];
+        setSelectedEventId(firstEvent.id);
+        
+        console.log('📅 Selected Event:', firstEvent);
+        
+        // Fetch attendees for the selected event
+        try {
+          const attendeesResponse = await fetch('/api/eventbrite/attendees', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              token: eventbriteToken, 
+              eventId: firstEvent.id 
+            }),
+          });
+          
+          const attendeesData = await attendeesResponse.json();
+          
+          if (attendeesResponse.ok) {
+            console.log('👥 Eventbrite Attendees Data:', attendeesData);
+            console.log(`📊 Found ${attendeesData.attendees?.length || 0} attendees for event: ${firstEvent.name}`);
+            
+            // Store attendees data for later use (but don't import to Firebase yet)
+            setCsvMembers(attendeesData.attendees || []);
+            
+            // Log sample attendee data for debugging
+            if (attendeesData.attendees && attendeesData.attendees.length > 0) {
+              console.log('👤 Sample Attendee:', attendeesData.attendees[0]);
+            }
+          } else {
+            console.error('❌ Failed to fetch attendees:', attendeesData.error);
+            setError(`Failed to fetch attendees: ${attendeesData.error}`);
+          }
+        } catch (attendeeError) {
+          console.error('❌ Error fetching attendees:', attendeeError);
+          setError('Failed to fetch event attendees');
         }
+        
         setCurrentStep(CommunityStep.MANUAL_FORM);
       } else {
         setError('No events found in your Eventbrite account');
       }
     } catch (error: any) {
+      console.error('❌ Eventbrite connection error:', error);
       setError(error.message || 'Failed to connect to Eventbrite');
     } finally {
       setFetchingEvents(false);
