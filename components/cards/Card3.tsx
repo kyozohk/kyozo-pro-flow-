@@ -23,7 +23,7 @@ export const Card3: React.FC = () => (
             </div>
             <div className="w-full md:w-3/5 h-[450px] relative">
             <Image 
-                              src="/event-brite-onboard.gif" 
+                              src="/grow.png" 
                               alt="Kyozo app on smartphone"
                               width={600}
                               height={1200}

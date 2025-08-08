@@ -11,6 +11,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // First, fetch event details to get the event name
+    const eventResponse = await fetch(`https://www.eventbriteapi.com/v3/events/${eventId}/`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    let eventName = 'Unknown Event';
+    if (eventResponse.ok) {
+      const eventData = await eventResponse.json();
+      eventName = eventData.name?.text || 'Unknown Event';
+    }
+
     // Fetch attendees from Eventbrite API
     const response = await fetch(`https://www.eventbriteapi.com/v3/events/${eventId}/attendees/`, {
       headers: {
@@ -61,7 +75,7 @@ export async function POST(request: NextRequest) {
         ticketType: attendee.ticket_class_name || 'General',
         source: 'eventbrite',
         eventId: eventId,
-        eventName: data.event?.name?.text || 'Unknown Event'
+        eventName: eventName
       };
     }).filter((attendee: any) => 
       // Only include attendees with valid email addresses
