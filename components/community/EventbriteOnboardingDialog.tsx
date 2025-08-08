@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../contexts/AuthContext';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, addDoc, getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { CustomButton } from '../index';
 import Dialog from '../ui/Dialog';
@@ -242,21 +242,70 @@ const EventbriteOnboardingDialog: React.FC<EventbriteOnboardingDialogProps> = ({
     addLog(`📊 Importing ${editableAttendees.length} edited attendees`);
 
     try {
-      // Here we would implement the Firebase import logic using editableAttendees
-      // For now, we'll just simulate the process and move to complete step
-      addLog('💾 Adding edited attendees as community members...');
+      // Get the user's first community (created in CommunityOnboardingDialog)
+      const communitiesRef = collection(db, `users/${user.uid}/communities`);
+      const communitiesSnapshot = await getDocs(communitiesRef);
       
-      // Log the edited data
-      console.log('=== EDITED ATTENDEES DATA FOR IMPORT ===');
-      console.log('Edited Attendees:', editableAttendees);
-      console.log('Total to Import:', editableAttendees.length);
-      console.log('=== END EDITED ATTENDEES DATA ===');
+      if (communitiesSnapshot.empty) {
+        throw new Error('No community found. Please create a community first.');
+      }
       
-      // Simulate processing time
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Use the first community (most recently created)
+      const communityDoc = communitiesSnapshot.docs[0];
+      const communityId = communityDoc.id;
+      const communityData = communityDoc.data();
       
-      addLog(`✅ Successfully imported ${editableAttendees.length} attendees as community members`);
+      addLog(`💾 Adding ${editableAttendees.length} attendees to community: ${communityData.name}`);
+      
+      // Import each attendee as a community member
+      const importPromises = editableAttendees.map(async (attendee, index) => {
+        const memberData = {
+          name: `${attendee.firstName} ${attendee.lastName}`.trim(),
+          firstName: attendee.firstName,
+          lastName: attendee.lastName,
+          email: attendee.email,
+          phone: attendee.phone || '',
+          dateOfBirth: attendee.dob || '',
+          eventNames: attendee.eventNames,
+          totalTickets: attendee.totalTickets,
+          source: 'eventbrite',
+          status: 'active',
+          joinDate: new Date(),
+          communityId: communityId,
+          communityName: communityData.name,
+          slug: `${attendee.firstName}-${attendee.lastName}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + `-${Date.now()}-${index}`,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        
+        // Add member to the community's members subcollection
+        const memberRef = await addDoc(
+          collection(db, `users/${user.uid}/communities/${communityId}/members`),
+          memberData
+        );
+        
+        addLog(`✅ Added member: ${memberData.name} (${memberData.email})`);
+        return { id: memberRef.id, ...memberData };
+      });
+      
+      // Wait for all members to be imported
+      const importedMembers = await Promise.all(importPromises);
+      
+      // Update community member count
+      await setDoc(doc(db, `users/${user.uid}/communities`, communityId), {
+        ...communityData,
+        memberCount: importedMembers.length,
+        lastUpdated: new Date()
+      });
+      
+      addLog(`✅ Successfully imported ${importedMembers.length} attendees as community members`);
       addLog('🎉 Import process completed successfully');
+      
+      console.log('=== IMPORTED MEMBERS DATA ===');
+      console.log('Imported Members:', importedMembers);
+      console.log('Community ID:', communityId);
+      console.log('Total Imported:', importedMembers.length);
+      console.log('=== END IMPORTED MEMBERS DATA ===');
       
       setCurrentStep('complete');
       

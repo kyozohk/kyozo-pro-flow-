@@ -6,6 +6,7 @@ import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import Sidebar from '../../components/dashboard/Sidebar';
 import CommunityOnboardingDialog from '../community/CommunityOnboardingDialog';
+import { usePathname } from 'next/navigation';
 
 interface DashboardProps {
   children?: React.ReactNode;
