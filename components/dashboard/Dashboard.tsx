@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import Sidebar from '../../components/dashboard/Sidebar';
-import CommunityOnboardingDialog from '../community/CommunityOnboardingDialog';
+import ImportCommunityDialog from '../community/ImportCommunityDialog';
 
 interface DashboardProps {
   children?: React.ReactNode;
@@ -66,6 +66,13 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
   };
   
   const handleCloseOnboarding = () => {
+    setShowOnboarding(false);
+  };
+  
+  const handleMethodSelect = (method: 'eventbrite' | 'csv' | 'manual') => {
+    console.log('Selected method:', method);
+    // TODO: Handle method selection - navigate to appropriate flow
+    // For now, just close the dialog
     setShowOnboarding(false);
   };
   
@@ -245,11 +252,11 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
         </div>
       </main>
       
-      {/* Community Onboarding Dialog */}
-      <CommunityOnboardingDialog
+      {/* Import Community Dialog */}
+      <ImportCommunityDialog
         isOpen={showOnboarding}
         onClose={handleCloseOnboarding}
-        onCommunityCreated={handleCommunityCreated}
+        onMethodSelect={handleMethodSelect}
       />
     </div>
   );
