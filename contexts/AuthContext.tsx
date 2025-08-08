@@ -230,6 +230,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
           lastName: names.slice(1).join(' ') || '',
           email: email,
           photoURL: photoURL,
+          phoneNumber: '', // Empty phone number requiring completion
+          countryCode: '', // Empty country code requiring completion
+          profileComplete: false, // Force profile completion to collect phone number
+          emailVerified: true, // Google accounts are pre-verified
           createdAt: new Date(),
         });
       }

@@ -28,12 +28,15 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({ onVerifica
     // Check if email is already verified
     if (currentUser.emailVerified) {
       setIsVerified(true);
-      // Call completion callback or redirect to profile completion
+      // Call completion callback to continue in unified dialog
       if (onVerificationComplete) {
-        onVerificationComplete();
-      } else {
         setTimeout(() => {
-          router.push('/auth/profile-completion');
+          onVerificationComplete();
+        }, 2000);
+      } else {
+        // Fallback: redirect to landing page to restart unified dialog flow
+        setTimeout(() => {
+          router.push('/');
         }, 2000);
       }
     }
@@ -75,7 +78,12 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({ onVerifica
       if (currentUser.emailVerified) {
         setIsVerified(true);
         setTimeout(() => {
-          router.push('/auth/profile-completion');
+          // Use callback if provided, otherwise redirect to landing page
+          if (onVerificationComplete) {
+            onVerificationComplete();
+          } else {
+            router.push('/');
+          }
         }, 2000);
       } else {
         setError('Email not yet verified. Please check your inbox and click the verification link.');
@@ -89,7 +97,13 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({ onVerifica
 
   if (isVerified) {
     return (
-      <Dialog title="Email Verified!" onClose={() => router.push('/auth/profile-completion')}>
+      <Dialog title="Email Verified!" onClose={() => {
+        if (onVerificationComplete) {
+          onVerificationComplete();
+        } else {
+          router.push('/');
+        }
+      }}>
         <div className="text-center">
           <svg className="w-16 h-16 mx-auto text-green-500 mb-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
