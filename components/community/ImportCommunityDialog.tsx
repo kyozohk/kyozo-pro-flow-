@@ -118,12 +118,12 @@ const ImportCommunityDialog: React.FC<ImportCommunityDialogProps> = ({
         {/* Right Side - Parallax Image (Card1 Style) */}
             <div className="w-full md:w-3/5 h-[450px] relative">
             <Image 
-                              src="/Parallax3.jpg" 
-                              alt="Kyozo app on smartphone"
-                              width={600}
-                              height={1200}
-                              className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
-                           />
+                src="/Parallax3.jpg" 
+                alt="Kyozo app on smartphone"
+                width={600}
+                height={1200}
+                className="w-full h-full object-cover drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+              />
             </div>
       </div>
     </Dialog>

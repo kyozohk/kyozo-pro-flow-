@@ -372,7 +372,8 @@ const EventbriteOnboardingDialog: React.FC<EventbriteOnboardingDialogProps> = ({
             alt="Eventbrite export guide"
             width={600}
             height={1200}
-            className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+            className="w-full h-full object-cover drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+            // className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
             unoptimized
           />
         </div>
